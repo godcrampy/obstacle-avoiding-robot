@@ -23,53 +23,13 @@ void pwm_init(){
 	ICR1=1000; //Sets ICP1(Reference to 1000)(Although it is called ICP1
 }
 
-void move_forward(){
+void move_forward(float left_rpm, float right_rpm){
 	PORTA|=(1<<PINA2)|(1<<PINA4);
 	PORTA&=~(1<<PINA3);
 	PORTA&=~(1<<PINA5);
-	OCR1A=1000;//Run Motor 1 at 100% of ICR1(Reference) value
-	OCR1B=1000;//Run Motor 2 at 100% of ICR1(Reference) value
+	OCR1A=left_rpm;//Run Motor 1 at 100% of ICR1(Reference) value
+	OCR1B=left_rpm;//Run Motor 2 at 100% of ICR1(Reference) value
 }
-
-void move_backward(){
-	PORTA|=(1<<PINA3)|(1<<PINA5);
-	PORTA&=~(1<<PINA2);
-	PORTA&=~(1<<PINA4);
-	OCR1A=1000;//Run Motor 1 at 100% of ICR1(Reference) value {Reverse}
-	OCR1B=1000;//Run Motor 2 at 100% of ICR1(Reference) value {Reverse}
-}
-
-void turn_left(){
-	PORTA|=(1<<PINA2)|(1<<PINA4);
-	PORTA&=~(1<<PINA3);
-	PORTA&=~(1<<PINA5);
-	OCR1A=1000;//Run Motor 1 at 100% of ICR1(Reference) value
-	OCR1B=450;//Run Motor 2 at 45% of ICR1(Reference) value
-}
-
-void turn_right(){
-	PORTA|=(1<<PINA2)|(1<<PINA4);
-	PORTA&=~(1<<PINA3);
-	PORTA&=~(1<<PINA5);
-	OCR1A=450;//Run Motor 1 at 45% of ICR1(Reference) value
-	OCR1B=1000;//Run Motor 2 at 100% of ICR1(Reference) value
-}
-
-void turn_left_hard(){
-	PORTA|=(1<<PINA2)|(1<<PINA5);
-	PORTA&=~(1<<PINA3);
-	PORTA&=~(1<<PINA4);
-	OCR1A=750;//Run Motor 1 at 100% of ICR1(Reference) value
-	OCR1B=750;//Run Motor 2 at 100% of ICR1(Reference) value {Reverse}
-}
-
-void turn_right_hard(){
-	PORTA|=(1<<PINA3)|(1<<PINA4);
-	PORTA&=~(1<<PINA2);
-	PORTA&=~(1<<PINA5);
-	OCR1A=750;//Run Motor 1 at 75% of ICR1(Reference) value {Reverse}
-	OCR1B=750;//Run Motor 2 at 75% of ICR1(Reference) value
-	}
 
 void stop(){
 	PORTA&=~(1<<PINA2);
@@ -80,109 +40,51 @@ void stop(){
 
 int main(void)
 {
-    
+    //Code for other ports I/O not set
 	 DDRA=0x00;
 	 DDRD=0xFF;
 	 pwm_init();
+	 //Set PID Constants=========
+	 float baseline=900;
+	 float k_p=1;
+	 float k_d=1;
+	 int pin_weights[8]=[-4,-3,-2,-1,1,2,3,4];
+     int pin_map[8]=[0,0,0,0,0,0,0,0];	
+     int pin_frequency = 0;
+     int cost = 0;
+     float prev_error=0;
+	 //==========================
 	 
-	//Code for other ports I/O not set
+	
     while (1)
     {
-		//Stop and Reverse
-	if(is_white(0) && is_white(1) && is_white(2) && is_white(3) && is_white(4) && is_white(5) && is_white(6) && is_white(7)){
-		stop();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		move_backward();
-	}
-		//4 White Code
-	else if(is_white(0) && is_white(1) && is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-			turn_right_hard();
-		}
-	else if(!is_white(0) && is_white(1) && is_white(2) && is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-			turn_right();
-    }
-	else if(!is_white(0) && !is_white(1) && is_white(2) && is_white(3) && is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
-		move_forward();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && is_white(4) && is_white(5) && is_white(6) && !is_white(7)){
-		turn_left();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && is_white(5) && is_white(6) && is_white(7)){
-		turn_right_hard();
-	}
-	//3 White Code
-	else if(is_white(0) && is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right_hard();
-	}
-	else if(!is_white(0) && is_white(1) && is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right();
-	}
-	else if(!is_white(0) && !is_white(1) && is_white(2) && is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
-		turn_left();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && is_white(5) && is_white(6) && !is_white(7)){
-		turn_left();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && is_white(5) && is_white(6) && is_white(7)){
-		turn_left_hard();
-	}
-	//2 white code
-	else if(is_white(0) && is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right_hard();
-	}
-	else if(!is_white(0) && is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right();
-	}
-	else if(!is_white(0) && !is_white(1) && is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		move_forward();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
-		turn_left();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && is_white(5) && is_white(6) && !is_white(7)){
-		turn_left();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && is_white(6) && is_white(7)){
-		turn_left_hard();
-	}
-	//1 line code
-	else if(is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right_hard();
-	}
-	else if(!is_white(0) && is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right();
-	}
-	else if(!is_white(0) && !is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right();
-	}
-	else if(!is_white(0) && !is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_right();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
-		turn_left();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
-		turn_left();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && is_white(6) && !is_white(7)){
-		turn_left();
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && is_white(7)){
-		turn_left_hard();
-	}
-	
-	
-	
+    	
+    	for(int i=0; i<8; i++){
+    		if is_white(i){
+    			pin_frequency++;
+    			cost+=pin_weights[i]*pin_map[i];
+    		}
+    	}
+    	if(pin_frequency==0){
+    		if(prev_error>0){
+    			move_forward(1000,200);
+    		}
+    		else{
+    			move_forward(200,1000);
+    		}
+    		error=prev_error;
+    	}
+    	else if(pin_frequency==8){
+    		stop();
+    	}
+    	else{
+    		float error = cost/pin_frequency;
+    		float diff_error = error - prev_error;
+    		float left_rpm = baseline + k_p*error + k_d*diff_error;
+    		float left_rpm = baseline - k_p*error - k_d*diff_error;
+    		move_forward(left_rpm, right_rpm);
+    		float prev_error = error;
+    	}
 	}
 	return 0;
 }
