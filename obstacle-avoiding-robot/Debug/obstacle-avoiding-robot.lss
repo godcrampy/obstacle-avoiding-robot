@@ -3,29 +3,29 @@ obstacle-avoiding-robot.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000cf8  00000000  00000000  00000054  2**1
+  0 .text         00000c7a  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  00000d4c  2**0
+  1 .data         00000000  00800060  00800060  00000cce  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000030  00000000  00000000  00000d4c  2**0
+  2 .comment      00000030  00000000  00000000  00000cce  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000d7c  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000d00  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000068  00000000  00000000  00000db8  2**0
+  4 .debug_aranges 00000060  00000000  00000000  00000d3c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00001d1b  00000000  00000000  00000e20  2**0
+  5 .debug_info   00001cfd  00000000  00000000  00000d9c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000055b  00000000  00000000  00002b3b  2**0
+  6 .debug_abbrev 0000055b  00000000  00000000  00002a99  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000ccf  00000000  00000000  00003096  2**0
+  7 .debug_line   00000c68  00000000  00000000  00002ff4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  000000b4  00000000  00000000  00003d68  2**2
+  8 .debug_frame  000000a4  00000000  00000000  00003c5c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000035a  00000000  00000000  00003e1c  2**0
+  9 .debug_str    00000351  00000000  00000000  00003d00  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000026  00000000  00000000  00004176  2**0
+ 10 .debug_loc    00000026  00000000  00000000  00004051  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000058  00000000  00000000  0000419c  2**0
+ 11 .debug_ranges 00000050  00000000  00000000  00004077  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -60,8 +60,8 @@ Disassembly of section .text:
   5a:	d8 e0       	ldi	r29, 0x08	; 8
   5c:	de bf       	out	0x3e, r29	; 62
   5e:	cd bf       	out	0x3d, r28	; 61
-  60:	0e 94 a6 00 	call	0x14c	; 0x14c <main>
-  64:	0c 94 7a 06 	jmp	0xcf4	; 0xcf4 <_exit>
+  60:	0e 94 69 00 	call	0xd2	; 0xd2 <main>
+  64:	0c 94 3b 06 	jmp	0xc76	; 0xc76 <_exit>
 
 00000068 <__bad_interrupt>:
   68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -89,1521 +89,1436 @@ int is_white(int n)
 }
   86:	08 95       	ret
 
-00000088 <pwm_init>:
-
-
-void pwm_init(){
-	TCCR0|=(1<<WGM00)|(1<<WGM01); //Set PWM to Fast PWM Mode
-  88:	83 b7       	in	r24, 0x33	; 51
-  8a:	88 64       	ori	r24, 0x48	; 72
-  8c:	83 bf       	out	0x33, r24	; 51
-	TCCR0|=(1<<COM00)|(1<<COM01); //Set Fast PWM to inverting mode
-  8e:	83 b7       	in	r24, 0x33	; 51
-  90:	80 63       	ori	r24, 0x30	; 48
-  92:	83 bf       	out	0x33, r24	; 51
-	TCCR0 |=(1<<CS01); //Prescale 8 bit counter to prescaling of 8 to count till 2048 counting (>100)(coz ICR1 is 1000 and hence couter must be greater than 1000)
-  94:	83 b7       	in	r24, 0x33	; 51
-  96:	82 60       	ori	r24, 0x02	; 2
-  98:	83 bf       	out	0x33, r24	; 51
-	    
-	TCCR0 &=~(1<<CS02);
-  9a:	83 b7       	in	r24, 0x33	; 51
-  9c:	8b 7f       	andi	r24, 0xFB	; 251
-  9e:	83 bf       	out	0x33, r24	; 51
-	ICR1=1000; //Sets ICP1(Reference to 1000)(Although it is called ICP1
-  a0:	88 ee       	ldi	r24, 0xE8	; 232
-  a2:	93 e0       	ldi	r25, 0x03	; 3
-  a4:	97 bd       	out	0x27, r25	; 39
-  a6:	86 bd       	out	0x26, r24	; 38
-  a8:	08 95       	ret
-
-000000aa <move_forward>:
-}
+00000088 <move_forward>:
 
 void move_forward(){
-	PORTA|=(1<<PINA2)|(1<<PINA4);
-  aa:	8b b3       	in	r24, 0x1b	; 27
-  ac:	84 61       	ori	r24, 0x14	; 20
-  ae:	8b bb       	out	0x1b, r24	; 27
-	PORTA&=~(1<<PINA3);
-  b0:	db 98       	cbi	0x1b, 3	; 27
-	PORTA&=~(1<<PINA5);
-  b2:	dd 98       	cbi	0x1b, 5	; 27
-	OCR1A=1000;//Run Motor 1 at 100% of ICR1(Reference) value
-  b4:	88 ee       	ldi	r24, 0xE8	; 232
-  b6:	93 e0       	ldi	r25, 0x03	; 3
-  b8:	9b bd       	out	0x2b, r25	; 43
-  ba:	8a bd       	out	0x2a, r24	; 42
-	OCR1B=1000;//Run Motor 2 at 100% of ICR1(Reference) value
-  bc:	99 bd       	out	0x29, r25	; 41
-  be:	88 bd       	out	0x28, r24	; 40
-  c0:	08 95       	ret
+	PORTD|=(1<<PIND1)|(1<<PIND2);
+  88:	82 b3       	in	r24, 0x12	; 18
+  8a:	86 60       	ori	r24, 0x06	; 6
+  8c:	82 bb       	out	0x12, r24	; 18
+	PORTD&=~(1<<PIND0);
+  8e:	90 98       	cbi	0x12, 0	; 18
+	PORTD&=~(1<<PIND3);
+  90:	93 98       	cbi	0x12, 3	; 18
+  92:	08 95       	ret
 
-000000c2 <move_backward>:
+00000094 <move_backward>:
 }
 
 void move_backward(){
-	PORTA|=(1<<PINA3)|(1<<PINA5);
-  c2:	8b b3       	in	r24, 0x1b	; 27
-  c4:	88 62       	ori	r24, 0x28	; 40
-  c6:	8b bb       	out	0x1b, r24	; 27
-	PORTA&=~(1<<PINA2);
-  c8:	da 98       	cbi	0x1b, 2	; 27
-	PORTA&=~(1<<PINA4);
-  ca:	dc 98       	cbi	0x1b, 4	; 27
-	OCR1A=1000;//Run Motor 1 at 100% of ICR1(Reference) value {Reverse}
-  cc:	88 ee       	ldi	r24, 0xE8	; 232
-  ce:	93 e0       	ldi	r25, 0x03	; 3
-  d0:	9b bd       	out	0x2b, r25	; 43
-  d2:	8a bd       	out	0x2a, r24	; 42
-	OCR1B=1000;//Run Motor 2 at 100% of ICR1(Reference) value {Reverse}
-  d4:	99 bd       	out	0x29, r25	; 41
-  d6:	88 bd       	out	0x28, r24	; 40
-  d8:	08 95       	ret
+	PORTD|=(1<<PIND3)|(1<<PIND0);
+  94:	82 b3       	in	r24, 0x12	; 18
+  96:	89 60       	ori	r24, 0x09	; 9
+  98:	82 bb       	out	0x12, r24	; 18
+	PORTD&=~(1<<PIND1);
+  9a:	91 98       	cbi	0x12, 1	; 18
+	PORTD&=~(1<<PIND2);
+  9c:	92 98       	cbi	0x12, 2	; 18
+  9e:	08 95       	ret
 
-000000da <turn_left>:
+000000a0 <turn_left>:
 }
 
 void turn_left(){
-	PORTA|=(1<<PINA2)|(1<<PINA4);
-  da:	8b b3       	in	r24, 0x1b	; 27
-  dc:	84 61       	ori	r24, 0x14	; 20
-  de:	8b bb       	out	0x1b, r24	; 27
-	PORTA&=~(1<<PINA3);
-  e0:	db 98       	cbi	0x1b, 3	; 27
-	PORTA&=~(1<<PINA5);
-  e2:	dd 98       	cbi	0x1b, 5	; 27
-	OCR1A=1000;//Run Motor 1 at 100% of ICR1(Reference) value
-  e4:	88 ee       	ldi	r24, 0xE8	; 232
-  e6:	93 e0       	ldi	r25, 0x03	; 3
-  e8:	9b bd       	out	0x2b, r25	; 43
-  ea:	8a bd       	out	0x2a, r24	; 42
-	OCR1B=450;//Run Motor 2 at 45% of ICR1(Reference) value
-  ec:	82 ec       	ldi	r24, 0xC2	; 194
-  ee:	91 e0       	ldi	r25, 0x01	; 1
-  f0:	99 bd       	out	0x29, r25	; 41
-  f2:	88 bd       	out	0x28, r24	; 40
-  f4:	08 95       	ret
+	PORTD|=(1<<PIND2);
+  a0:	92 9a       	sbi	0x12, 2	; 18
+	PORTD&=~(1<<PIND0);
+  a2:	90 98       	cbi	0x12, 0	; 18
+	PORTD&=~(1<<PIND1);
+  a4:	91 98       	cbi	0x12, 1	; 18
+	PORTD&=~(1<<PIND3);
+  a6:	93 98       	cbi	0x12, 3	; 18
+  a8:	08 95       	ret
 
-000000f6 <turn_right>:
+000000aa <turn_right>:
 }
 
 void turn_right(){
-	PORTA|=(1<<PINA2)|(1<<PINA4);
-  f6:	8b b3       	in	r24, 0x1b	; 27
-  f8:	84 61       	ori	r24, 0x14	; 20
-  fa:	8b bb       	out	0x1b, r24	; 27
-	PORTA&=~(1<<PINA3);
-  fc:	db 98       	cbi	0x1b, 3	; 27
-	PORTA&=~(1<<PINA5);
-  fe:	dd 98       	cbi	0x1b, 5	; 27
-	OCR1A=450;//Run Motor 1 at 45% of ICR1(Reference) value
- 100:	82 ec       	ldi	r24, 0xC2	; 194
- 102:	91 e0       	ldi	r25, 0x01	; 1
- 104:	9b bd       	out	0x2b, r25	; 43
- 106:	8a bd       	out	0x2a, r24	; 42
-	OCR1B=1000;//Run Motor 2 at 100% of ICR1(Reference) value
- 108:	88 ee       	ldi	r24, 0xE8	; 232
- 10a:	93 e0       	ldi	r25, 0x03	; 3
- 10c:	99 bd       	out	0x29, r25	; 41
- 10e:	88 bd       	out	0x28, r24	; 40
- 110:	08 95       	ret
+	PORTD|=(1<<PIND1);
+  aa:	91 9a       	sbi	0x12, 1	; 18
+	PORTD&=~(1<<PIND0);
+  ac:	90 98       	cbi	0x12, 0	; 18
+	PORTD&=~(1<<PIND2);
+  ae:	92 98       	cbi	0x12, 2	; 18
+	PORTD&=~(1<<PIND3);
+  b0:	93 98       	cbi	0x12, 3	; 18
+  b2:	08 95       	ret
 
-00000112 <turn_left_hard>:
+000000b4 <turn_left_hard>:
 }
 
 void turn_left_hard(){
-	PORTA|=(1<<PINA2)|(1<<PINA5);
- 112:	8b b3       	in	r24, 0x1b	; 27
- 114:	84 62       	ori	r24, 0x24	; 36
- 116:	8b bb       	out	0x1b, r24	; 27
-	PORTA&=~(1<<PINA3);
- 118:	db 98       	cbi	0x1b, 3	; 27
-	PORTA&=~(1<<PINA4);
- 11a:	dc 98       	cbi	0x1b, 4	; 27
-	OCR1A=750;//Run Motor 1 at 100% of ICR1(Reference) value
- 11c:	8e ee       	ldi	r24, 0xEE	; 238
- 11e:	92 e0       	ldi	r25, 0x02	; 2
- 120:	9b bd       	out	0x2b, r25	; 43
- 122:	8a bd       	out	0x2a, r24	; 42
-	OCR1B=750;//Run Motor 2 at 100% of ICR1(Reference) value {Reverse}
- 124:	99 bd       	out	0x29, r25	; 41
- 126:	88 bd       	out	0x28, r24	; 40
- 128:	08 95       	ret
+	PORTD|=(1<<PIND2);
+  b4:	92 9a       	sbi	0x12, 2	; 18
+	PORTD|=(1<<PIND0);
+  b6:	90 9a       	sbi	0x12, 0	; 18
+	PORTD&=~(1<<PIND1);
+  b8:	91 98       	cbi	0x12, 1	; 18
+	PORTD&=~(1<<PIND3);
+  ba:	93 98       	cbi	0x12, 3	; 18
+  bc:	08 95       	ret
 
-0000012a <turn_right_hard>:
+000000be <turn_right_hard>:
 }
 
 void turn_right_hard(){
-	PORTA|=(1<<PINA3)|(1<<PINA4);
- 12a:	8b b3       	in	r24, 0x1b	; 27
- 12c:	88 61       	ori	r24, 0x18	; 24
- 12e:	8b bb       	out	0x1b, r24	; 27
-	PORTA&=~(1<<PINA2);
- 130:	da 98       	cbi	0x1b, 2	; 27
-	PORTA&=~(1<<PINA5);
- 132:	dd 98       	cbi	0x1b, 5	; 27
-	OCR1A=750;//Run Motor 1 at 75% of ICR1(Reference) value {Reverse}
- 134:	8e ee       	ldi	r24, 0xEE	; 238
- 136:	92 e0       	ldi	r25, 0x02	; 2
- 138:	9b bd       	out	0x2b, r25	; 43
- 13a:	8a bd       	out	0x2a, r24	; 42
-	OCR1B=750;//Run Motor 2 at 75% of ICR1(Reference) value
- 13c:	99 bd       	out	0x29, r25	; 41
- 13e:	88 bd       	out	0x28, r24	; 40
- 140:	08 95       	ret
+	PORTD|=(1<<PIND1);
+  be:	91 9a       	sbi	0x12, 1	; 18
+	PORTD|=(1<<PIND3);
+  c0:	93 9a       	sbi	0x12, 3	; 18
+	PORTD&=~(1<<PIND2);
+  c2:	92 98       	cbi	0x12, 2	; 18
+	PORTD&=~(1<<PIND0);
+  c4:	90 98       	cbi	0x12, 0	; 18
+  c6:	08 95       	ret
 
-00000142 <stop>:
+000000c8 <stop>:
 	}
 
 void stop(){
 	PORTA&=~(1<<PINA2);
- 142:	da 98       	cbi	0x1b, 2	; 27
+  c8:	da 98       	cbi	0x1b, 2	; 27
 	PORTA&=~(1<<PINA3);
- 144:	db 98       	cbi	0x1b, 3	; 27
+  ca:	db 98       	cbi	0x1b, 3	; 27
 	PORTA&=~(1<<PINA4);
- 146:	dc 98       	cbi	0x1b, 4	; 27
+  cc:	dc 98       	cbi	0x1b, 4	; 27
 	PORTA&=~(1<<PINA5);
- 148:	dd 98       	cbi	0x1b, 5	; 27
- 14a:	08 95       	ret
+  ce:	dd 98       	cbi	0x1b, 5	; 27
+  d0:	08 95       	ret
 
-0000014c <main>:
+000000d2 <main>:
 }
 
 int main(void)
 {
-    
 	 DDRA=0x00;
- 14c:	1a ba       	out	0x1a, r1	; 26
+  d2:	1a ba       	out	0x1a, r1	; 26
 	 DDRD=0xFF;
- 14e:	8f ef       	ldi	r24, 0xFF	; 255
- 150:	81 bb       	out	0x11, r24	; 17
-	 pwm_init();
- 152:	0e 94 44 00 	call	0x88	; 0x88 <pwm_init>
-	 
+  d4:	8f ef       	ldi	r24, 0xFF	; 255
+  d6:	81 bb       	out	0x11, r24	; 17
 	//Code for other ports I/O not set
     while (1)
     {
 		//Stop and Reverse
 	if(is_white(0) && is_white(1) && is_white(2) && is_white(3) && is_white(4) && is_white(5) && is_white(6) && is_white(7)){
- 156:	80 e0       	ldi	r24, 0x00	; 0
+  d8:	80 e0       	ldi	r24, 0x00	; 0
+  da:	90 e0       	ldi	r25, 0x00	; 0
+  dc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+  e0:	89 2b       	or	r24, r25
+  e2:	69 f1       	breq	.+90     	; 0x13e <main+0x6c>
+  e4:	81 e0       	ldi	r24, 0x01	; 1
+  e6:	90 e0       	ldi	r25, 0x00	; 0
+  e8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+  ec:	89 2b       	or	r24, r25
+  ee:	39 f1       	breq	.+78     	; 0x13e <main+0x6c>
+  f0:	82 e0       	ldi	r24, 0x02	; 2
+  f2:	90 e0       	ldi	r25, 0x00	; 0
+  f4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+  f8:	89 2b       	or	r24, r25
+  fa:	09 f1       	breq	.+66     	; 0x13e <main+0x6c>
+  fc:	83 e0       	ldi	r24, 0x03	; 3
+  fe:	90 e0       	ldi	r25, 0x00	; 0
+ 100:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 104:	89 2b       	or	r24, r25
+ 106:	d9 f0       	breq	.+54     	; 0x13e <main+0x6c>
+ 108:	84 e0       	ldi	r24, 0x04	; 4
+ 10a:	90 e0       	ldi	r25, 0x00	; 0
+ 10c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 110:	89 2b       	or	r24, r25
+ 112:	a9 f0       	breq	.+42     	; 0x13e <main+0x6c>
+ 114:	85 e0       	ldi	r24, 0x05	; 5
+ 116:	90 e0       	ldi	r25, 0x00	; 0
+ 118:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 11c:	89 2b       	or	r24, r25
+ 11e:	79 f0       	breq	.+30     	; 0x13e <main+0x6c>
+ 120:	86 e0       	ldi	r24, 0x06	; 6
+ 122:	90 e0       	ldi	r25, 0x00	; 0
+ 124:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 128:	89 2b       	or	r24, r25
+ 12a:	49 f0       	breq	.+18     	; 0x13e <main+0x6c>
+ 12c:	87 e0       	ldi	r24, 0x07	; 7
+ 12e:	90 e0       	ldi	r25, 0x00	; 0
+ 130:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 134:	89 2b       	or	r24, r25
+ 136:	19 f0       	breq	.+6      	; 0x13e <main+0x6c>
+		stop();
+ 138:	0e 94 64 00 	call	0xc8	; 0xc8 <stop>
+ 13c:	cd cf       	rjmp	.-102    	; 0xd8 <main+0x6>
+	}
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ 13e:	80 e0       	ldi	r24, 0x00	; 0
+ 140:	90 e0       	ldi	r25, 0x00	; 0
+ 142:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 146:	89 2b       	or	r24, r25
+ 148:	69 f5       	brne	.+90     	; 0x1a4 <main+0xd2>
+ 14a:	81 e0       	ldi	r24, 0x01	; 1
+ 14c:	90 e0       	ldi	r25, 0x00	; 0
+ 14e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 152:	89 2b       	or	r24, r25
+ 154:	39 f5       	brne	.+78     	; 0x1a4 <main+0xd2>
+ 156:	82 e0       	ldi	r24, 0x02	; 2
  158:	90 e0       	ldi	r25, 0x00	; 0
  15a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  15e:	89 2b       	or	r24, r25
- 160:	69 f1       	breq	.+90     	; 0x1bc <main+0x70>
- 162:	81 e0       	ldi	r24, 0x01	; 1
+ 160:	09 f5       	brne	.+66     	; 0x1a4 <main+0xd2>
+ 162:	83 e0       	ldi	r24, 0x03	; 3
  164:	90 e0       	ldi	r25, 0x00	; 0
  166:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  16a:	89 2b       	or	r24, r25
- 16c:	39 f1       	breq	.+78     	; 0x1bc <main+0x70>
- 16e:	82 e0       	ldi	r24, 0x02	; 2
+ 16c:	d9 f4       	brne	.+54     	; 0x1a4 <main+0xd2>
+ 16e:	84 e0       	ldi	r24, 0x04	; 4
  170:	90 e0       	ldi	r25, 0x00	; 0
  172:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  176:	89 2b       	or	r24, r25
- 178:	09 f1       	breq	.+66     	; 0x1bc <main+0x70>
- 17a:	83 e0       	ldi	r24, 0x03	; 3
+ 178:	a9 f4       	brne	.+42     	; 0x1a4 <main+0xd2>
+ 17a:	85 e0       	ldi	r24, 0x05	; 5
  17c:	90 e0       	ldi	r25, 0x00	; 0
  17e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  182:	89 2b       	or	r24, r25
- 184:	d9 f0       	breq	.+54     	; 0x1bc <main+0x70>
- 186:	84 e0       	ldi	r24, 0x04	; 4
+ 184:	79 f4       	brne	.+30     	; 0x1a4 <main+0xd2>
+ 186:	86 e0       	ldi	r24, 0x06	; 6
  188:	90 e0       	ldi	r25, 0x00	; 0
  18a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  18e:	89 2b       	or	r24, r25
- 190:	a9 f0       	breq	.+42     	; 0x1bc <main+0x70>
- 192:	85 e0       	ldi	r24, 0x05	; 5
+ 190:	49 f4       	brne	.+18     	; 0x1a4 <main+0xd2>
+ 192:	87 e0       	ldi	r24, 0x07	; 7
  194:	90 e0       	ldi	r25, 0x00	; 0
  196:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  19a:	89 2b       	or	r24, r25
- 19c:	79 f0       	breq	.+30     	; 0x1bc <main+0x70>
- 19e:	86 e0       	ldi	r24, 0x06	; 6
- 1a0:	90 e0       	ldi	r25, 0x00	; 0
- 1a2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 1a6:	89 2b       	or	r24, r25
- 1a8:	49 f0       	breq	.+18     	; 0x1bc <main+0x70>
- 1aa:	87 e0       	ldi	r24, 0x07	; 7
- 1ac:	90 e0       	ldi	r25, 0x00	; 0
- 1ae:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 1b2:	89 2b       	or	r24, r25
- 1b4:	19 f0       	breq	.+6      	; 0x1bc <main+0x70>
-		stop();
- 1b6:	0e 94 a1 00 	call	0x142	; 0x142 <stop>
- 1ba:	cd cf       	rjmp	.-102    	; 0x156 <main+0xa>
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 1bc:	80 e0       	ldi	r24, 0x00	; 0
- 1be:	90 e0       	ldi	r25, 0x00	; 0
- 1c0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 1c4:	89 2b       	or	r24, r25
- 1c6:	69 f5       	brne	.+90     	; 0x222 <main+0xd6>
- 1c8:	81 e0       	ldi	r24, 0x01	; 1
- 1ca:	90 e0       	ldi	r25, 0x00	; 0
- 1cc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 1d0:	89 2b       	or	r24, r25
- 1d2:	39 f5       	brne	.+78     	; 0x222 <main+0xd6>
- 1d4:	82 e0       	ldi	r24, 0x02	; 2
- 1d6:	90 e0       	ldi	r25, 0x00	; 0
- 1d8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 1dc:	89 2b       	or	r24, r25
- 1de:	09 f5       	brne	.+66     	; 0x222 <main+0xd6>
- 1e0:	83 e0       	ldi	r24, 0x03	; 3
- 1e2:	90 e0       	ldi	r25, 0x00	; 0
- 1e4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 1e8:	89 2b       	or	r24, r25
- 1ea:	d9 f4       	brne	.+54     	; 0x222 <main+0xd6>
- 1ec:	84 e0       	ldi	r24, 0x04	; 4
- 1ee:	90 e0       	ldi	r25, 0x00	; 0
- 1f0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 1f4:	89 2b       	or	r24, r25
- 1f6:	a9 f4       	brne	.+42     	; 0x222 <main+0xd6>
- 1f8:	85 e0       	ldi	r24, 0x05	; 5
- 1fa:	90 e0       	ldi	r25, 0x00	; 0
- 1fc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 200:	89 2b       	or	r24, r25
- 202:	79 f4       	brne	.+30     	; 0x222 <main+0xd6>
- 204:	86 e0       	ldi	r24, 0x06	; 6
- 206:	90 e0       	ldi	r25, 0x00	; 0
- 208:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 20c:	89 2b       	or	r24, r25
- 20e:	49 f4       	brne	.+18     	; 0x222 <main+0xd6>
- 210:	87 e0       	ldi	r24, 0x07	; 7
- 212:	90 e0       	ldi	r25, 0x00	; 0
- 214:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 218:	89 2b       	or	r24, r25
- 21a:	19 f4       	brne	.+6      	; 0x222 <main+0xd6>
+ 19c:	19 f4       	brne	.+6      	; 0x1a4 <main+0xd2>
 		move_backward();
- 21c:	0e 94 61 00 	call	0xc2	; 0xc2 <move_backward>
- 220:	9a cf       	rjmp	.-204    	; 0x156 <main+0xa>
+ 19e:	0e 94 4a 00 	call	0x94	; 0x94 <move_backward>
+ 1a2:	9a cf       	rjmp	.-204    	; 0xd8 <main+0x6>
 	}
 		//4 White Code
 	else if(is_white(0) && is_white(1) && is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 222:	80 e0       	ldi	r24, 0x00	; 0
+ 1a4:	80 e0       	ldi	r24, 0x00	; 0
+ 1a6:	90 e0       	ldi	r25, 0x00	; 0
+ 1a8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 1ac:	89 2b       	or	r24, r25
+ 1ae:	69 f1       	breq	.+90     	; 0x20a <main+0x138>
+ 1b0:	81 e0       	ldi	r24, 0x01	; 1
+ 1b2:	90 e0       	ldi	r25, 0x00	; 0
+ 1b4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 1b8:	89 2b       	or	r24, r25
+ 1ba:	39 f1       	breq	.+78     	; 0x20a <main+0x138>
+ 1bc:	82 e0       	ldi	r24, 0x02	; 2
+ 1be:	90 e0       	ldi	r25, 0x00	; 0
+ 1c0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 1c4:	89 2b       	or	r24, r25
+ 1c6:	09 f1       	breq	.+66     	; 0x20a <main+0x138>
+ 1c8:	83 e0       	ldi	r24, 0x03	; 3
+ 1ca:	90 e0       	ldi	r25, 0x00	; 0
+ 1cc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 1d0:	89 2b       	or	r24, r25
+ 1d2:	d9 f0       	breq	.+54     	; 0x20a <main+0x138>
+ 1d4:	84 e0       	ldi	r24, 0x04	; 4
+ 1d6:	90 e0       	ldi	r25, 0x00	; 0
+ 1d8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 1dc:	89 2b       	or	r24, r25
+ 1de:	a9 f4       	brne	.+42     	; 0x20a <main+0x138>
+ 1e0:	85 e0       	ldi	r24, 0x05	; 5
+ 1e2:	90 e0       	ldi	r25, 0x00	; 0
+ 1e4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 1e8:	89 2b       	or	r24, r25
+ 1ea:	79 f4       	brne	.+30     	; 0x20a <main+0x138>
+ 1ec:	86 e0       	ldi	r24, 0x06	; 6
+ 1ee:	90 e0       	ldi	r25, 0x00	; 0
+ 1f0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 1f4:	89 2b       	or	r24, r25
+ 1f6:	49 f4       	brne	.+18     	; 0x20a <main+0x138>
+ 1f8:	87 e0       	ldi	r24, 0x07	; 7
+ 1fa:	90 e0       	ldi	r25, 0x00	; 0
+ 1fc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 200:	89 2b       	or	r24, r25
+ 202:	19 f4       	brne	.+6      	; 0x20a <main+0x138>
+			turn_right_hard();
+ 204:	0e 94 5f 00 	call	0xbe	; 0xbe <turn_right_hard>
+ 208:	67 cf       	rjmp	.-306    	; 0xd8 <main+0x6>
+		}
+	else if(!is_white(0) && is_white(1) && is_white(2) && is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ 20a:	80 e0       	ldi	r24, 0x00	; 0
+ 20c:	90 e0       	ldi	r25, 0x00	; 0
+ 20e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 212:	89 2b       	or	r24, r25
+ 214:	69 f5       	brne	.+90     	; 0x270 <main+0x19e>
+ 216:	81 e0       	ldi	r24, 0x01	; 1
+ 218:	90 e0       	ldi	r25, 0x00	; 0
+ 21a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 21e:	89 2b       	or	r24, r25
+ 220:	39 f1       	breq	.+78     	; 0x270 <main+0x19e>
+ 222:	82 e0       	ldi	r24, 0x02	; 2
  224:	90 e0       	ldi	r25, 0x00	; 0
  226:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  22a:	89 2b       	or	r24, r25
- 22c:	69 f1       	breq	.+90     	; 0x288 <main+0x13c>
- 22e:	81 e0       	ldi	r24, 0x01	; 1
+ 22c:	09 f1       	breq	.+66     	; 0x270 <main+0x19e>
+ 22e:	83 e0       	ldi	r24, 0x03	; 3
  230:	90 e0       	ldi	r25, 0x00	; 0
  232:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  236:	89 2b       	or	r24, r25
- 238:	39 f1       	breq	.+78     	; 0x288 <main+0x13c>
- 23a:	82 e0       	ldi	r24, 0x02	; 2
+ 238:	d9 f0       	breq	.+54     	; 0x270 <main+0x19e>
+ 23a:	84 e0       	ldi	r24, 0x04	; 4
  23c:	90 e0       	ldi	r25, 0x00	; 0
  23e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  242:	89 2b       	or	r24, r25
- 244:	09 f1       	breq	.+66     	; 0x288 <main+0x13c>
- 246:	83 e0       	ldi	r24, 0x03	; 3
+ 244:	a9 f0       	breq	.+42     	; 0x270 <main+0x19e>
+ 246:	85 e0       	ldi	r24, 0x05	; 5
  248:	90 e0       	ldi	r25, 0x00	; 0
  24a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  24e:	89 2b       	or	r24, r25
- 250:	d9 f0       	breq	.+54     	; 0x288 <main+0x13c>
- 252:	84 e0       	ldi	r24, 0x04	; 4
+ 250:	79 f4       	brne	.+30     	; 0x270 <main+0x19e>
+ 252:	86 e0       	ldi	r24, 0x06	; 6
  254:	90 e0       	ldi	r25, 0x00	; 0
  256:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  25a:	89 2b       	or	r24, r25
- 25c:	a9 f4       	brne	.+42     	; 0x288 <main+0x13c>
- 25e:	85 e0       	ldi	r24, 0x05	; 5
+ 25c:	49 f4       	brne	.+18     	; 0x270 <main+0x19e>
+ 25e:	87 e0       	ldi	r24, 0x07	; 7
  260:	90 e0       	ldi	r25, 0x00	; 0
  262:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  266:	89 2b       	or	r24, r25
- 268:	79 f4       	brne	.+30     	; 0x288 <main+0x13c>
- 26a:	86 e0       	ldi	r24, 0x06	; 6
- 26c:	90 e0       	ldi	r25, 0x00	; 0
- 26e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 272:	89 2b       	or	r24, r25
- 274:	49 f4       	brne	.+18     	; 0x288 <main+0x13c>
- 276:	87 e0       	ldi	r24, 0x07	; 7
- 278:	90 e0       	ldi	r25, 0x00	; 0
- 27a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 27e:	89 2b       	or	r24, r25
- 280:	19 f4       	brne	.+6      	; 0x288 <main+0x13c>
-			turn_right_hard();
- 282:	0e 94 95 00 	call	0x12a	; 0x12a <turn_right_hard>
- 286:	67 cf       	rjmp	.-306    	; 0x156 <main+0xa>
-		}
-	else if(!is_white(0) && is_white(1) && is_white(2) && is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 288:	80 e0       	ldi	r24, 0x00	; 0
+ 268:	19 f4       	brne	.+6      	; 0x270 <main+0x19e>
+			turn_right();
+ 26a:	0e 94 55 00 	call	0xaa	; 0xaa <turn_right>
+ 26e:	34 cf       	rjmp	.-408    	; 0xd8 <main+0x6>
+    }
+	else if(!is_white(0) && !is_white(1) && is_white(2) && is_white(3) && is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
+ 270:	80 e0       	ldi	r24, 0x00	; 0
+ 272:	90 e0       	ldi	r25, 0x00	; 0
+ 274:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 278:	89 2b       	or	r24, r25
+ 27a:	69 f5       	brne	.+90     	; 0x2d6 <main+0x204>
+ 27c:	81 e0       	ldi	r24, 0x01	; 1
+ 27e:	90 e0       	ldi	r25, 0x00	; 0
+ 280:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 284:	89 2b       	or	r24, r25
+ 286:	39 f5       	brne	.+78     	; 0x2d6 <main+0x204>
+ 288:	82 e0       	ldi	r24, 0x02	; 2
  28a:	90 e0       	ldi	r25, 0x00	; 0
  28c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  290:	89 2b       	or	r24, r25
- 292:	69 f5       	brne	.+90     	; 0x2ee <main+0x1a2>
- 294:	81 e0       	ldi	r24, 0x01	; 1
+ 292:	09 f1       	breq	.+66     	; 0x2d6 <main+0x204>
+ 294:	83 e0       	ldi	r24, 0x03	; 3
  296:	90 e0       	ldi	r25, 0x00	; 0
  298:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  29c:	89 2b       	or	r24, r25
- 29e:	39 f1       	breq	.+78     	; 0x2ee <main+0x1a2>
- 2a0:	82 e0       	ldi	r24, 0x02	; 2
+ 29e:	d9 f0       	breq	.+54     	; 0x2d6 <main+0x204>
+ 2a0:	84 e0       	ldi	r24, 0x04	; 4
  2a2:	90 e0       	ldi	r25, 0x00	; 0
  2a4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  2a8:	89 2b       	or	r24, r25
- 2aa:	09 f1       	breq	.+66     	; 0x2ee <main+0x1a2>
- 2ac:	83 e0       	ldi	r24, 0x03	; 3
+ 2aa:	a9 f0       	breq	.+42     	; 0x2d6 <main+0x204>
+ 2ac:	85 e0       	ldi	r24, 0x05	; 5
  2ae:	90 e0       	ldi	r25, 0x00	; 0
  2b0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  2b4:	89 2b       	or	r24, r25
- 2b6:	d9 f0       	breq	.+54     	; 0x2ee <main+0x1a2>
- 2b8:	84 e0       	ldi	r24, 0x04	; 4
+ 2b6:	79 f0       	breq	.+30     	; 0x2d6 <main+0x204>
+ 2b8:	86 e0       	ldi	r24, 0x06	; 6
  2ba:	90 e0       	ldi	r25, 0x00	; 0
  2bc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  2c0:	89 2b       	or	r24, r25
- 2c2:	a9 f0       	breq	.+42     	; 0x2ee <main+0x1a2>
- 2c4:	85 e0       	ldi	r24, 0x05	; 5
+ 2c2:	49 f4       	brne	.+18     	; 0x2d6 <main+0x204>
+ 2c4:	87 e0       	ldi	r24, 0x07	; 7
  2c6:	90 e0       	ldi	r25, 0x00	; 0
  2c8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  2cc:	89 2b       	or	r24, r25
- 2ce:	79 f4       	brne	.+30     	; 0x2ee <main+0x1a2>
- 2d0:	86 e0       	ldi	r24, 0x06	; 6
- 2d2:	90 e0       	ldi	r25, 0x00	; 0
- 2d4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 2d8:	89 2b       	or	r24, r25
- 2da:	49 f4       	brne	.+18     	; 0x2ee <main+0x1a2>
- 2dc:	87 e0       	ldi	r24, 0x07	; 7
- 2de:	90 e0       	ldi	r25, 0x00	; 0
- 2e0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 2e4:	89 2b       	or	r24, r25
- 2e6:	19 f4       	brne	.+6      	; 0x2ee <main+0x1a2>
-			turn_right();
- 2e8:	0e 94 7b 00 	call	0xf6	; 0xf6 <turn_right>
- 2ec:	34 cf       	rjmp	.-408    	; 0x156 <main+0xa>
-    }
-	else if(!is_white(0) && !is_white(1) && is_white(2) && is_white(3) && is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
- 2ee:	80 e0       	ldi	r24, 0x00	; 0
+ 2ce:	19 f4       	brne	.+6      	; 0x2d6 <main+0x204>
+		move_forward();
+ 2d0:	0e 94 44 00 	call	0x88	; 0x88 <move_forward>
+ 2d4:	01 cf       	rjmp	.-510    	; 0xd8 <main+0x6>
+	}
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && is_white(4) && is_white(5) && is_white(6) && !is_white(7)){
+ 2d6:	80 e0       	ldi	r24, 0x00	; 0
+ 2d8:	90 e0       	ldi	r25, 0x00	; 0
+ 2da:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 2de:	89 2b       	or	r24, r25
+ 2e0:	69 f5       	brne	.+90     	; 0x33c <main+0x26a>
+ 2e2:	81 e0       	ldi	r24, 0x01	; 1
+ 2e4:	90 e0       	ldi	r25, 0x00	; 0
+ 2e6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 2ea:	89 2b       	or	r24, r25
+ 2ec:	39 f5       	brne	.+78     	; 0x33c <main+0x26a>
+ 2ee:	82 e0       	ldi	r24, 0x02	; 2
  2f0:	90 e0       	ldi	r25, 0x00	; 0
  2f2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  2f6:	89 2b       	or	r24, r25
- 2f8:	69 f5       	brne	.+90     	; 0x354 <main+0x208>
- 2fa:	81 e0       	ldi	r24, 0x01	; 1
+ 2f8:	09 f5       	brne	.+66     	; 0x33c <main+0x26a>
+ 2fa:	83 e0       	ldi	r24, 0x03	; 3
  2fc:	90 e0       	ldi	r25, 0x00	; 0
  2fe:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  302:	89 2b       	or	r24, r25
- 304:	39 f5       	brne	.+78     	; 0x354 <main+0x208>
- 306:	82 e0       	ldi	r24, 0x02	; 2
+ 304:	d9 f0       	breq	.+54     	; 0x33c <main+0x26a>
+ 306:	84 e0       	ldi	r24, 0x04	; 4
  308:	90 e0       	ldi	r25, 0x00	; 0
  30a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  30e:	89 2b       	or	r24, r25
- 310:	09 f1       	breq	.+66     	; 0x354 <main+0x208>
- 312:	83 e0       	ldi	r24, 0x03	; 3
+ 310:	a9 f0       	breq	.+42     	; 0x33c <main+0x26a>
+ 312:	85 e0       	ldi	r24, 0x05	; 5
  314:	90 e0       	ldi	r25, 0x00	; 0
  316:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  31a:	89 2b       	or	r24, r25
- 31c:	d9 f0       	breq	.+54     	; 0x354 <main+0x208>
- 31e:	84 e0       	ldi	r24, 0x04	; 4
+ 31c:	79 f0       	breq	.+30     	; 0x33c <main+0x26a>
+ 31e:	86 e0       	ldi	r24, 0x06	; 6
  320:	90 e0       	ldi	r25, 0x00	; 0
  322:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  326:	89 2b       	or	r24, r25
- 328:	a9 f0       	breq	.+42     	; 0x354 <main+0x208>
- 32a:	85 e0       	ldi	r24, 0x05	; 5
+ 328:	49 f0       	breq	.+18     	; 0x33c <main+0x26a>
+ 32a:	87 e0       	ldi	r24, 0x07	; 7
  32c:	90 e0       	ldi	r25, 0x00	; 0
  32e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  332:	89 2b       	or	r24, r25
- 334:	79 f0       	breq	.+30     	; 0x354 <main+0x208>
- 336:	86 e0       	ldi	r24, 0x06	; 6
- 338:	90 e0       	ldi	r25, 0x00	; 0
- 33a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 33e:	89 2b       	or	r24, r25
- 340:	49 f4       	brne	.+18     	; 0x354 <main+0x208>
- 342:	87 e0       	ldi	r24, 0x07	; 7
- 344:	90 e0       	ldi	r25, 0x00	; 0
- 346:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 34a:	89 2b       	or	r24, r25
- 34c:	19 f4       	brne	.+6      	; 0x354 <main+0x208>
-		move_forward();
- 34e:	0e 94 55 00 	call	0xaa	; 0xaa <move_forward>
- 352:	01 cf       	rjmp	.-510    	; 0x156 <main+0xa>
+ 334:	19 f4       	brne	.+6      	; 0x33c <main+0x26a>
+		turn_left();
+ 336:	0e 94 50 00 	call	0xa0	; 0xa0 <turn_left>
+ 33a:	ce ce       	rjmp	.-612    	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && is_white(4) && is_white(5) && is_white(6) && !is_white(7)){
- 354:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && is_white(5) && is_white(6) && is_white(7)){
+ 33c:	80 e0       	ldi	r24, 0x00	; 0
+ 33e:	90 e0       	ldi	r25, 0x00	; 0
+ 340:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 344:	89 2b       	or	r24, r25
+ 346:	69 f5       	brne	.+90     	; 0x3a2 <main+0x2d0>
+ 348:	81 e0       	ldi	r24, 0x01	; 1
+ 34a:	90 e0       	ldi	r25, 0x00	; 0
+ 34c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 350:	89 2b       	or	r24, r25
+ 352:	39 f5       	brne	.+78     	; 0x3a2 <main+0x2d0>
+ 354:	82 e0       	ldi	r24, 0x02	; 2
  356:	90 e0       	ldi	r25, 0x00	; 0
  358:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  35c:	89 2b       	or	r24, r25
- 35e:	69 f5       	brne	.+90     	; 0x3ba <main+0x26e>
- 360:	81 e0       	ldi	r24, 0x01	; 1
+ 35e:	09 f5       	brne	.+66     	; 0x3a2 <main+0x2d0>
+ 360:	83 e0       	ldi	r24, 0x03	; 3
  362:	90 e0       	ldi	r25, 0x00	; 0
  364:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  368:	89 2b       	or	r24, r25
- 36a:	39 f5       	brne	.+78     	; 0x3ba <main+0x26e>
- 36c:	82 e0       	ldi	r24, 0x02	; 2
+ 36a:	d9 f4       	brne	.+54     	; 0x3a2 <main+0x2d0>
+ 36c:	84 e0       	ldi	r24, 0x04	; 4
  36e:	90 e0       	ldi	r25, 0x00	; 0
  370:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  374:	89 2b       	or	r24, r25
- 376:	09 f5       	brne	.+66     	; 0x3ba <main+0x26e>
- 378:	83 e0       	ldi	r24, 0x03	; 3
+ 376:	a9 f0       	breq	.+42     	; 0x3a2 <main+0x2d0>
+ 378:	85 e0       	ldi	r24, 0x05	; 5
  37a:	90 e0       	ldi	r25, 0x00	; 0
  37c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  380:	89 2b       	or	r24, r25
- 382:	d9 f0       	breq	.+54     	; 0x3ba <main+0x26e>
- 384:	84 e0       	ldi	r24, 0x04	; 4
+ 382:	79 f0       	breq	.+30     	; 0x3a2 <main+0x2d0>
+ 384:	86 e0       	ldi	r24, 0x06	; 6
  386:	90 e0       	ldi	r25, 0x00	; 0
  388:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  38c:	89 2b       	or	r24, r25
- 38e:	a9 f0       	breq	.+42     	; 0x3ba <main+0x26e>
- 390:	85 e0       	ldi	r24, 0x05	; 5
+ 38e:	49 f0       	breq	.+18     	; 0x3a2 <main+0x2d0>
+ 390:	87 e0       	ldi	r24, 0x07	; 7
  392:	90 e0       	ldi	r25, 0x00	; 0
  394:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  398:	89 2b       	or	r24, r25
- 39a:	79 f0       	breq	.+30     	; 0x3ba <main+0x26e>
- 39c:	86 e0       	ldi	r24, 0x06	; 6
- 39e:	90 e0       	ldi	r25, 0x00	; 0
- 3a0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 3a4:	89 2b       	or	r24, r25
- 3a6:	49 f0       	breq	.+18     	; 0x3ba <main+0x26e>
- 3a8:	87 e0       	ldi	r24, 0x07	; 7
- 3aa:	90 e0       	ldi	r25, 0x00	; 0
- 3ac:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 3b0:	89 2b       	or	r24, r25
- 3b2:	19 f4       	brne	.+6      	; 0x3ba <main+0x26e>
-		turn_left();
- 3b4:	0e 94 6d 00 	call	0xda	; 0xda <turn_left>
- 3b8:	ce ce       	rjmp	.-612    	; 0x156 <main+0xa>
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && is_white(5) && is_white(6) && is_white(7)){
- 3ba:	80 e0       	ldi	r24, 0x00	; 0
- 3bc:	90 e0       	ldi	r25, 0x00	; 0
- 3be:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 3c2:	89 2b       	or	r24, r25
- 3c4:	69 f5       	brne	.+90     	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
- 3c6:	81 e0       	ldi	r24, 0x01	; 1
- 3c8:	90 e0       	ldi	r25, 0x00	; 0
- 3ca:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 3ce:	89 2b       	or	r24, r25
- 3d0:	39 f5       	brne	.+78     	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
- 3d2:	82 e0       	ldi	r24, 0x02	; 2
- 3d4:	90 e0       	ldi	r25, 0x00	; 0
- 3d6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 3da:	89 2b       	or	r24, r25
- 3dc:	09 f5       	brne	.+66     	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
- 3de:	83 e0       	ldi	r24, 0x03	; 3
- 3e0:	90 e0       	ldi	r25, 0x00	; 0
- 3e2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 3e6:	89 2b       	or	r24, r25
- 3e8:	d9 f4       	brne	.+54     	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
- 3ea:	84 e0       	ldi	r24, 0x04	; 4
- 3ec:	90 e0       	ldi	r25, 0x00	; 0
- 3ee:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 3f2:	89 2b       	or	r24, r25
- 3f4:	a9 f0       	breq	.+42     	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
- 3f6:	85 e0       	ldi	r24, 0x05	; 5
- 3f8:	90 e0       	ldi	r25, 0x00	; 0
- 3fa:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 3fe:	89 2b       	or	r24, r25
- 400:	79 f0       	breq	.+30     	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
- 402:	86 e0       	ldi	r24, 0x06	; 6
- 404:	90 e0       	ldi	r25, 0x00	; 0
- 406:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 40a:	89 2b       	or	r24, r25
- 40c:	49 f0       	breq	.+18     	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
- 40e:	87 e0       	ldi	r24, 0x07	; 7
- 410:	90 e0       	ldi	r25, 0x00	; 0
- 412:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 416:	89 2b       	or	r24, r25
- 418:	19 f0       	breq	.+6      	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
+ 39a:	19 f0       	breq	.+6      	; 0x3a2 <main+0x2d0>
 		turn_right_hard();
- 41a:	0e 94 95 00 	call	0x12a	; 0x12a <turn_right_hard>
- 41e:	9b ce       	rjmp	.-714    	; 0x156 <main+0xa>
+ 39c:	0e 94 5f 00 	call	0xbe	; 0xbe <turn_right_hard>
+ 3a0:	9b ce       	rjmp	.-714    	; 0xd8 <main+0x6>
 	}
 	//3 White Code
 	else if(is_white(0) && is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 420:	80 e0       	ldi	r24, 0x00	; 0
+ 3a2:	80 e0       	ldi	r24, 0x00	; 0
+ 3a4:	90 e0       	ldi	r25, 0x00	; 0
+ 3a6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 3aa:	89 2b       	or	r24, r25
+ 3ac:	69 f1       	breq	.+90     	; 0x408 <__LOCK_REGION_LENGTH__+0x8>
+ 3ae:	81 e0       	ldi	r24, 0x01	; 1
+ 3b0:	90 e0       	ldi	r25, 0x00	; 0
+ 3b2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 3b6:	89 2b       	or	r24, r25
+ 3b8:	39 f1       	breq	.+78     	; 0x408 <__LOCK_REGION_LENGTH__+0x8>
+ 3ba:	82 e0       	ldi	r24, 0x02	; 2
+ 3bc:	90 e0       	ldi	r25, 0x00	; 0
+ 3be:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 3c2:	89 2b       	or	r24, r25
+ 3c4:	09 f1       	breq	.+66     	; 0x408 <__LOCK_REGION_LENGTH__+0x8>
+ 3c6:	83 e0       	ldi	r24, 0x03	; 3
+ 3c8:	90 e0       	ldi	r25, 0x00	; 0
+ 3ca:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 3ce:	89 2b       	or	r24, r25
+ 3d0:	d9 f4       	brne	.+54     	; 0x408 <__LOCK_REGION_LENGTH__+0x8>
+ 3d2:	84 e0       	ldi	r24, 0x04	; 4
+ 3d4:	90 e0       	ldi	r25, 0x00	; 0
+ 3d6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 3da:	89 2b       	or	r24, r25
+ 3dc:	a9 f4       	brne	.+42     	; 0x408 <__LOCK_REGION_LENGTH__+0x8>
+ 3de:	85 e0       	ldi	r24, 0x05	; 5
+ 3e0:	90 e0       	ldi	r25, 0x00	; 0
+ 3e2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 3e6:	89 2b       	or	r24, r25
+ 3e8:	79 f4       	brne	.+30     	; 0x408 <__LOCK_REGION_LENGTH__+0x8>
+ 3ea:	86 e0       	ldi	r24, 0x06	; 6
+ 3ec:	90 e0       	ldi	r25, 0x00	; 0
+ 3ee:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 3f2:	89 2b       	or	r24, r25
+ 3f4:	49 f4       	brne	.+18     	; 0x408 <__LOCK_REGION_LENGTH__+0x8>
+ 3f6:	87 e0       	ldi	r24, 0x07	; 7
+ 3f8:	90 e0       	ldi	r25, 0x00	; 0
+ 3fa:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 3fe:	89 2b       	or	r24, r25
+ 400:	19 f4       	brne	.+6      	; 0x408 <__LOCK_REGION_LENGTH__+0x8>
+		turn_right_hard();
+ 402:	0e 94 5f 00 	call	0xbe	; 0xbe <turn_right_hard>
+ 406:	68 ce       	rjmp	.-816    	; 0xd8 <main+0x6>
+	}
+	else if(!is_white(0) && is_white(1) && is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ 408:	80 e0       	ldi	r24, 0x00	; 0
+ 40a:	90 e0       	ldi	r25, 0x00	; 0
+ 40c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 410:	89 2b       	or	r24, r25
+ 412:	69 f5       	brne	.+90     	; 0x46e <__LOCK_REGION_LENGTH__+0x6e>
+ 414:	81 e0       	ldi	r24, 0x01	; 1
+ 416:	90 e0       	ldi	r25, 0x00	; 0
+ 418:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 41c:	89 2b       	or	r24, r25
+ 41e:	39 f1       	breq	.+78     	; 0x46e <__LOCK_REGION_LENGTH__+0x6e>
+ 420:	82 e0       	ldi	r24, 0x02	; 2
  422:	90 e0       	ldi	r25, 0x00	; 0
  424:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  428:	89 2b       	or	r24, r25
- 42a:	69 f1       	breq	.+90     	; 0x486 <__LOCK_REGION_LENGTH__+0x86>
- 42c:	81 e0       	ldi	r24, 0x01	; 1
+ 42a:	09 f1       	breq	.+66     	; 0x46e <__LOCK_REGION_LENGTH__+0x6e>
+ 42c:	83 e0       	ldi	r24, 0x03	; 3
  42e:	90 e0       	ldi	r25, 0x00	; 0
  430:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  434:	89 2b       	or	r24, r25
- 436:	39 f1       	breq	.+78     	; 0x486 <__LOCK_REGION_LENGTH__+0x86>
- 438:	82 e0       	ldi	r24, 0x02	; 2
+ 436:	d9 f0       	breq	.+54     	; 0x46e <__LOCK_REGION_LENGTH__+0x6e>
+ 438:	84 e0       	ldi	r24, 0x04	; 4
  43a:	90 e0       	ldi	r25, 0x00	; 0
  43c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  440:	89 2b       	or	r24, r25
- 442:	09 f1       	breq	.+66     	; 0x486 <__LOCK_REGION_LENGTH__+0x86>
- 444:	83 e0       	ldi	r24, 0x03	; 3
+ 442:	a9 f4       	brne	.+42     	; 0x46e <__LOCK_REGION_LENGTH__+0x6e>
+ 444:	85 e0       	ldi	r24, 0x05	; 5
  446:	90 e0       	ldi	r25, 0x00	; 0
  448:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  44c:	89 2b       	or	r24, r25
- 44e:	d9 f4       	brne	.+54     	; 0x486 <__LOCK_REGION_LENGTH__+0x86>
- 450:	84 e0       	ldi	r24, 0x04	; 4
+ 44e:	79 f4       	brne	.+30     	; 0x46e <__LOCK_REGION_LENGTH__+0x6e>
+ 450:	86 e0       	ldi	r24, 0x06	; 6
  452:	90 e0       	ldi	r25, 0x00	; 0
  454:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  458:	89 2b       	or	r24, r25
- 45a:	a9 f4       	brne	.+42     	; 0x486 <__LOCK_REGION_LENGTH__+0x86>
- 45c:	85 e0       	ldi	r24, 0x05	; 5
+ 45a:	49 f4       	brne	.+18     	; 0x46e <__LOCK_REGION_LENGTH__+0x6e>
+ 45c:	87 e0       	ldi	r24, 0x07	; 7
  45e:	90 e0       	ldi	r25, 0x00	; 0
  460:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  464:	89 2b       	or	r24, r25
- 466:	79 f4       	brne	.+30     	; 0x486 <__LOCK_REGION_LENGTH__+0x86>
- 468:	86 e0       	ldi	r24, 0x06	; 6
- 46a:	90 e0       	ldi	r25, 0x00	; 0
- 46c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 470:	89 2b       	or	r24, r25
- 472:	49 f4       	brne	.+18     	; 0x486 <__LOCK_REGION_LENGTH__+0x86>
- 474:	87 e0       	ldi	r24, 0x07	; 7
- 476:	90 e0       	ldi	r25, 0x00	; 0
- 478:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 47c:	89 2b       	or	r24, r25
- 47e:	19 f4       	brne	.+6      	; 0x486 <__LOCK_REGION_LENGTH__+0x86>
-		turn_right_hard();
- 480:	0e 94 95 00 	call	0x12a	; 0x12a <turn_right_hard>
- 484:	68 ce       	rjmp	.-816    	; 0x156 <main+0xa>
+ 466:	19 f4       	brne	.+6      	; 0x46e <__LOCK_REGION_LENGTH__+0x6e>
+		turn_right();
+ 468:	0e 94 55 00 	call	0xaa	; 0xaa <turn_right>
+ 46c:	35 ce       	rjmp	.-918    	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && is_white(1) && is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 486:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && is_white(2) && is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ 46e:	80 e0       	ldi	r24, 0x00	; 0
+ 470:	90 e0       	ldi	r25, 0x00	; 0
+ 472:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 476:	89 2b       	or	r24, r25
+ 478:	69 f5       	brne	.+90     	; 0x4d4 <__LOCK_REGION_LENGTH__+0xd4>
+ 47a:	81 e0       	ldi	r24, 0x01	; 1
+ 47c:	90 e0       	ldi	r25, 0x00	; 0
+ 47e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 482:	89 2b       	or	r24, r25
+ 484:	39 f5       	brne	.+78     	; 0x4d4 <__LOCK_REGION_LENGTH__+0xd4>
+ 486:	82 e0       	ldi	r24, 0x02	; 2
  488:	90 e0       	ldi	r25, 0x00	; 0
  48a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  48e:	89 2b       	or	r24, r25
- 490:	69 f5       	brne	.+90     	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
- 492:	81 e0       	ldi	r24, 0x01	; 1
+ 490:	09 f1       	breq	.+66     	; 0x4d4 <__LOCK_REGION_LENGTH__+0xd4>
+ 492:	83 e0       	ldi	r24, 0x03	; 3
  494:	90 e0       	ldi	r25, 0x00	; 0
  496:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  49a:	89 2b       	or	r24, r25
- 49c:	39 f1       	breq	.+78     	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
- 49e:	82 e0       	ldi	r24, 0x02	; 2
+ 49c:	d9 f0       	breq	.+54     	; 0x4d4 <__LOCK_REGION_LENGTH__+0xd4>
+ 49e:	84 e0       	ldi	r24, 0x04	; 4
  4a0:	90 e0       	ldi	r25, 0x00	; 0
  4a2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  4a6:	89 2b       	or	r24, r25
- 4a8:	09 f1       	breq	.+66     	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
- 4aa:	83 e0       	ldi	r24, 0x03	; 3
+ 4a8:	a9 f0       	breq	.+42     	; 0x4d4 <__LOCK_REGION_LENGTH__+0xd4>
+ 4aa:	85 e0       	ldi	r24, 0x05	; 5
  4ac:	90 e0       	ldi	r25, 0x00	; 0
  4ae:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  4b2:	89 2b       	or	r24, r25
- 4b4:	d9 f0       	breq	.+54     	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
- 4b6:	84 e0       	ldi	r24, 0x04	; 4
+ 4b4:	79 f4       	brne	.+30     	; 0x4d4 <__LOCK_REGION_LENGTH__+0xd4>
+ 4b6:	86 e0       	ldi	r24, 0x06	; 6
  4b8:	90 e0       	ldi	r25, 0x00	; 0
  4ba:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  4be:	89 2b       	or	r24, r25
- 4c0:	a9 f4       	brne	.+42     	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
- 4c2:	85 e0       	ldi	r24, 0x05	; 5
+ 4c0:	49 f4       	brne	.+18     	; 0x4d4 <__LOCK_REGION_LENGTH__+0xd4>
+ 4c2:	87 e0       	ldi	r24, 0x07	; 7
  4c4:	90 e0       	ldi	r25, 0x00	; 0
  4c6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  4ca:	89 2b       	or	r24, r25
- 4cc:	79 f4       	brne	.+30     	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
- 4ce:	86 e0       	ldi	r24, 0x06	; 6
- 4d0:	90 e0       	ldi	r25, 0x00	; 0
- 4d2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 4d6:	89 2b       	or	r24, r25
- 4d8:	49 f4       	brne	.+18     	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
- 4da:	87 e0       	ldi	r24, 0x07	; 7
- 4dc:	90 e0       	ldi	r25, 0x00	; 0
- 4de:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 4e2:	89 2b       	or	r24, r25
- 4e4:	19 f4       	brne	.+6      	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
+ 4cc:	19 f4       	brne	.+6      	; 0x4d4 <__LOCK_REGION_LENGTH__+0xd4>
 		turn_right();
- 4e6:	0e 94 7b 00 	call	0xf6	; 0xf6 <turn_right>
- 4ea:	35 ce       	rjmp	.-918    	; 0x156 <main+0xa>
+ 4ce:	0e 94 55 00 	call	0xaa	; 0xaa <turn_right>
+ 4d2:	02 ce       	rjmp	.-1020   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && is_white(2) && is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 4ec:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
+ 4d4:	80 e0       	ldi	r24, 0x00	; 0
+ 4d6:	90 e0       	ldi	r25, 0x00	; 0
+ 4d8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 4dc:	89 2b       	or	r24, r25
+ 4de:	69 f5       	brne	.+90     	; 0x53a <__LOCK_REGION_LENGTH__+0x13a>
+ 4e0:	81 e0       	ldi	r24, 0x01	; 1
+ 4e2:	90 e0       	ldi	r25, 0x00	; 0
+ 4e4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 4e8:	89 2b       	or	r24, r25
+ 4ea:	39 f5       	brne	.+78     	; 0x53a <__LOCK_REGION_LENGTH__+0x13a>
+ 4ec:	82 e0       	ldi	r24, 0x02	; 2
  4ee:	90 e0       	ldi	r25, 0x00	; 0
  4f0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  4f4:	89 2b       	or	r24, r25
- 4f6:	69 f5       	brne	.+90     	; 0x552 <__LOCK_REGION_LENGTH__+0x152>
- 4f8:	81 e0       	ldi	r24, 0x01	; 1
+ 4f6:	09 f5       	brne	.+66     	; 0x53a <__LOCK_REGION_LENGTH__+0x13a>
+ 4f8:	83 e0       	ldi	r24, 0x03	; 3
  4fa:	90 e0       	ldi	r25, 0x00	; 0
  4fc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  500:	89 2b       	or	r24, r25
- 502:	39 f5       	brne	.+78     	; 0x552 <__LOCK_REGION_LENGTH__+0x152>
- 504:	82 e0       	ldi	r24, 0x02	; 2
+ 502:	d9 f0       	breq	.+54     	; 0x53a <__LOCK_REGION_LENGTH__+0x13a>
+ 504:	84 e0       	ldi	r24, 0x04	; 4
  506:	90 e0       	ldi	r25, 0x00	; 0
  508:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  50c:	89 2b       	or	r24, r25
- 50e:	09 f1       	breq	.+66     	; 0x552 <__LOCK_REGION_LENGTH__+0x152>
- 510:	83 e0       	ldi	r24, 0x03	; 3
+ 50e:	a9 f0       	breq	.+42     	; 0x53a <__LOCK_REGION_LENGTH__+0x13a>
+ 510:	85 e0       	ldi	r24, 0x05	; 5
  512:	90 e0       	ldi	r25, 0x00	; 0
  514:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  518:	89 2b       	or	r24, r25
- 51a:	d9 f0       	breq	.+54     	; 0x552 <__LOCK_REGION_LENGTH__+0x152>
- 51c:	84 e0       	ldi	r24, 0x04	; 4
+ 51a:	79 f0       	breq	.+30     	; 0x53a <__LOCK_REGION_LENGTH__+0x13a>
+ 51c:	86 e0       	ldi	r24, 0x06	; 6
  51e:	90 e0       	ldi	r25, 0x00	; 0
  520:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  524:	89 2b       	or	r24, r25
- 526:	a9 f0       	breq	.+42     	; 0x552 <__LOCK_REGION_LENGTH__+0x152>
- 528:	85 e0       	ldi	r24, 0x05	; 5
+ 526:	49 f4       	brne	.+18     	; 0x53a <__LOCK_REGION_LENGTH__+0x13a>
+ 528:	87 e0       	ldi	r24, 0x07	; 7
  52a:	90 e0       	ldi	r25, 0x00	; 0
  52c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  530:	89 2b       	or	r24, r25
- 532:	79 f4       	brne	.+30     	; 0x552 <__LOCK_REGION_LENGTH__+0x152>
- 534:	86 e0       	ldi	r24, 0x06	; 6
- 536:	90 e0       	ldi	r25, 0x00	; 0
- 538:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 53c:	89 2b       	or	r24, r25
- 53e:	49 f4       	brne	.+18     	; 0x552 <__LOCK_REGION_LENGTH__+0x152>
- 540:	87 e0       	ldi	r24, 0x07	; 7
- 542:	90 e0       	ldi	r25, 0x00	; 0
- 544:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 548:	89 2b       	or	r24, r25
- 54a:	19 f4       	brne	.+6      	; 0x552 <__LOCK_REGION_LENGTH__+0x152>
-		turn_right();
- 54c:	0e 94 7b 00 	call	0xf6	; 0xf6 <turn_right>
- 550:	02 ce       	rjmp	.-1020   	; 0x156 <main+0xa>
+ 532:	19 f4       	brne	.+6      	; 0x53a <__LOCK_REGION_LENGTH__+0x13a>
+		turn_left();
+ 534:	0e 94 50 00 	call	0xa0	; 0xa0 <turn_left>
+ 538:	cf cd       	rjmp	.-1122   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
- 552:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && is_white(5) && is_white(6) && !is_white(7)){
+ 53a:	80 e0       	ldi	r24, 0x00	; 0
+ 53c:	90 e0       	ldi	r25, 0x00	; 0
+ 53e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 542:	89 2b       	or	r24, r25
+ 544:	69 f5       	brne	.+90     	; 0x5a0 <__LOCK_REGION_LENGTH__+0x1a0>
+ 546:	81 e0       	ldi	r24, 0x01	; 1
+ 548:	90 e0       	ldi	r25, 0x00	; 0
+ 54a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 54e:	89 2b       	or	r24, r25
+ 550:	39 f5       	brne	.+78     	; 0x5a0 <__LOCK_REGION_LENGTH__+0x1a0>
+ 552:	82 e0       	ldi	r24, 0x02	; 2
  554:	90 e0       	ldi	r25, 0x00	; 0
  556:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  55a:	89 2b       	or	r24, r25
- 55c:	69 f5       	brne	.+90     	; 0x5b8 <__LOCK_REGION_LENGTH__+0x1b8>
- 55e:	81 e0       	ldi	r24, 0x01	; 1
+ 55c:	09 f5       	brne	.+66     	; 0x5a0 <__LOCK_REGION_LENGTH__+0x1a0>
+ 55e:	83 e0       	ldi	r24, 0x03	; 3
  560:	90 e0       	ldi	r25, 0x00	; 0
  562:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  566:	89 2b       	or	r24, r25
- 568:	39 f5       	brne	.+78     	; 0x5b8 <__LOCK_REGION_LENGTH__+0x1b8>
- 56a:	82 e0       	ldi	r24, 0x02	; 2
+ 568:	d9 f4       	brne	.+54     	; 0x5a0 <__LOCK_REGION_LENGTH__+0x1a0>
+ 56a:	84 e0       	ldi	r24, 0x04	; 4
  56c:	90 e0       	ldi	r25, 0x00	; 0
  56e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  572:	89 2b       	or	r24, r25
- 574:	09 f5       	brne	.+66     	; 0x5b8 <__LOCK_REGION_LENGTH__+0x1b8>
- 576:	83 e0       	ldi	r24, 0x03	; 3
+ 574:	a9 f0       	breq	.+42     	; 0x5a0 <__LOCK_REGION_LENGTH__+0x1a0>
+ 576:	85 e0       	ldi	r24, 0x05	; 5
  578:	90 e0       	ldi	r25, 0x00	; 0
  57a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  57e:	89 2b       	or	r24, r25
- 580:	d9 f0       	breq	.+54     	; 0x5b8 <__LOCK_REGION_LENGTH__+0x1b8>
- 582:	84 e0       	ldi	r24, 0x04	; 4
+ 580:	79 f0       	breq	.+30     	; 0x5a0 <__LOCK_REGION_LENGTH__+0x1a0>
+ 582:	86 e0       	ldi	r24, 0x06	; 6
  584:	90 e0       	ldi	r25, 0x00	; 0
  586:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  58a:	89 2b       	or	r24, r25
- 58c:	a9 f0       	breq	.+42     	; 0x5b8 <__LOCK_REGION_LENGTH__+0x1b8>
- 58e:	85 e0       	ldi	r24, 0x05	; 5
+ 58c:	49 f0       	breq	.+18     	; 0x5a0 <__LOCK_REGION_LENGTH__+0x1a0>
+ 58e:	87 e0       	ldi	r24, 0x07	; 7
  590:	90 e0       	ldi	r25, 0x00	; 0
  592:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  596:	89 2b       	or	r24, r25
- 598:	79 f0       	breq	.+30     	; 0x5b8 <__LOCK_REGION_LENGTH__+0x1b8>
- 59a:	86 e0       	ldi	r24, 0x06	; 6
- 59c:	90 e0       	ldi	r25, 0x00	; 0
- 59e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 5a2:	89 2b       	or	r24, r25
- 5a4:	49 f4       	brne	.+18     	; 0x5b8 <__LOCK_REGION_LENGTH__+0x1b8>
- 5a6:	87 e0       	ldi	r24, 0x07	; 7
- 5a8:	90 e0       	ldi	r25, 0x00	; 0
- 5aa:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 5ae:	89 2b       	or	r24, r25
- 5b0:	19 f4       	brne	.+6      	; 0x5b8 <__LOCK_REGION_LENGTH__+0x1b8>
+ 598:	19 f4       	brne	.+6      	; 0x5a0 <__LOCK_REGION_LENGTH__+0x1a0>
 		turn_left();
- 5b2:	0e 94 6d 00 	call	0xda	; 0xda <turn_left>
- 5b6:	cf cd       	rjmp	.-1122   	; 0x156 <main+0xa>
+ 59a:	0e 94 50 00 	call	0xa0	; 0xa0 <turn_left>
+ 59e:	9c cd       	rjmp	.-1224   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && is_white(5) && is_white(6) && !is_white(7)){
- 5b8:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && is_white(5) && is_white(6) && is_white(7)){
+ 5a0:	80 e0       	ldi	r24, 0x00	; 0
+ 5a2:	90 e0       	ldi	r25, 0x00	; 0
+ 5a4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 5a8:	89 2b       	or	r24, r25
+ 5aa:	69 f5       	brne	.+90     	; 0x606 <__LOCK_REGION_LENGTH__+0x206>
+ 5ac:	81 e0       	ldi	r24, 0x01	; 1
+ 5ae:	90 e0       	ldi	r25, 0x00	; 0
+ 5b0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 5b4:	89 2b       	or	r24, r25
+ 5b6:	39 f5       	brne	.+78     	; 0x606 <__LOCK_REGION_LENGTH__+0x206>
+ 5b8:	82 e0       	ldi	r24, 0x02	; 2
  5ba:	90 e0       	ldi	r25, 0x00	; 0
  5bc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  5c0:	89 2b       	or	r24, r25
- 5c2:	69 f5       	brne	.+90     	; 0x61e <__LOCK_REGION_LENGTH__+0x21e>
- 5c4:	81 e0       	ldi	r24, 0x01	; 1
+ 5c2:	09 f5       	brne	.+66     	; 0x606 <__LOCK_REGION_LENGTH__+0x206>
+ 5c4:	83 e0       	ldi	r24, 0x03	; 3
  5c6:	90 e0       	ldi	r25, 0x00	; 0
  5c8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  5cc:	89 2b       	or	r24, r25
- 5ce:	39 f5       	brne	.+78     	; 0x61e <__LOCK_REGION_LENGTH__+0x21e>
- 5d0:	82 e0       	ldi	r24, 0x02	; 2
+ 5ce:	d9 f4       	brne	.+54     	; 0x606 <__LOCK_REGION_LENGTH__+0x206>
+ 5d0:	84 e0       	ldi	r24, 0x04	; 4
  5d2:	90 e0       	ldi	r25, 0x00	; 0
  5d4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  5d8:	89 2b       	or	r24, r25
- 5da:	09 f5       	brne	.+66     	; 0x61e <__LOCK_REGION_LENGTH__+0x21e>
- 5dc:	83 e0       	ldi	r24, 0x03	; 3
+ 5da:	a9 f4       	brne	.+42     	; 0x606 <__LOCK_REGION_LENGTH__+0x206>
+ 5dc:	85 e0       	ldi	r24, 0x05	; 5
  5de:	90 e0       	ldi	r25, 0x00	; 0
  5e0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  5e4:	89 2b       	or	r24, r25
- 5e6:	d9 f4       	brne	.+54     	; 0x61e <__LOCK_REGION_LENGTH__+0x21e>
- 5e8:	84 e0       	ldi	r24, 0x04	; 4
+ 5e6:	79 f0       	breq	.+30     	; 0x606 <__LOCK_REGION_LENGTH__+0x206>
+ 5e8:	86 e0       	ldi	r24, 0x06	; 6
  5ea:	90 e0       	ldi	r25, 0x00	; 0
  5ec:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  5f0:	89 2b       	or	r24, r25
- 5f2:	a9 f0       	breq	.+42     	; 0x61e <__LOCK_REGION_LENGTH__+0x21e>
- 5f4:	85 e0       	ldi	r24, 0x05	; 5
+ 5f2:	49 f0       	breq	.+18     	; 0x606 <__LOCK_REGION_LENGTH__+0x206>
+ 5f4:	87 e0       	ldi	r24, 0x07	; 7
  5f6:	90 e0       	ldi	r25, 0x00	; 0
  5f8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  5fc:	89 2b       	or	r24, r25
- 5fe:	79 f0       	breq	.+30     	; 0x61e <__LOCK_REGION_LENGTH__+0x21e>
- 600:	86 e0       	ldi	r24, 0x06	; 6
- 602:	90 e0       	ldi	r25, 0x00	; 0
- 604:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 608:	89 2b       	or	r24, r25
- 60a:	49 f0       	breq	.+18     	; 0x61e <__LOCK_REGION_LENGTH__+0x21e>
- 60c:	87 e0       	ldi	r24, 0x07	; 7
- 60e:	90 e0       	ldi	r25, 0x00	; 0
- 610:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 614:	89 2b       	or	r24, r25
- 616:	19 f4       	brne	.+6      	; 0x61e <__LOCK_REGION_LENGTH__+0x21e>
-		turn_left();
- 618:	0e 94 6d 00 	call	0xda	; 0xda <turn_left>
- 61c:	9c cd       	rjmp	.-1224   	; 0x156 <main+0xa>
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && is_white(5) && is_white(6) && is_white(7)){
- 61e:	80 e0       	ldi	r24, 0x00	; 0
- 620:	90 e0       	ldi	r25, 0x00	; 0
- 622:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 626:	89 2b       	or	r24, r25
- 628:	69 f5       	brne	.+90     	; 0x684 <__LOCK_REGION_LENGTH__+0x284>
- 62a:	81 e0       	ldi	r24, 0x01	; 1
- 62c:	90 e0       	ldi	r25, 0x00	; 0
- 62e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 632:	89 2b       	or	r24, r25
- 634:	39 f5       	brne	.+78     	; 0x684 <__LOCK_REGION_LENGTH__+0x284>
- 636:	82 e0       	ldi	r24, 0x02	; 2
- 638:	90 e0       	ldi	r25, 0x00	; 0
- 63a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 63e:	89 2b       	or	r24, r25
- 640:	09 f5       	brne	.+66     	; 0x684 <__LOCK_REGION_LENGTH__+0x284>
- 642:	83 e0       	ldi	r24, 0x03	; 3
- 644:	90 e0       	ldi	r25, 0x00	; 0
- 646:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 64a:	89 2b       	or	r24, r25
- 64c:	d9 f4       	brne	.+54     	; 0x684 <__LOCK_REGION_LENGTH__+0x284>
- 64e:	84 e0       	ldi	r24, 0x04	; 4
- 650:	90 e0       	ldi	r25, 0x00	; 0
- 652:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 656:	89 2b       	or	r24, r25
- 658:	a9 f4       	brne	.+42     	; 0x684 <__LOCK_REGION_LENGTH__+0x284>
- 65a:	85 e0       	ldi	r24, 0x05	; 5
- 65c:	90 e0       	ldi	r25, 0x00	; 0
- 65e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 662:	89 2b       	or	r24, r25
- 664:	79 f0       	breq	.+30     	; 0x684 <__LOCK_REGION_LENGTH__+0x284>
- 666:	86 e0       	ldi	r24, 0x06	; 6
- 668:	90 e0       	ldi	r25, 0x00	; 0
- 66a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 66e:	89 2b       	or	r24, r25
- 670:	49 f0       	breq	.+18     	; 0x684 <__LOCK_REGION_LENGTH__+0x284>
- 672:	87 e0       	ldi	r24, 0x07	; 7
- 674:	90 e0       	ldi	r25, 0x00	; 0
- 676:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 67a:	89 2b       	or	r24, r25
- 67c:	19 f0       	breq	.+6      	; 0x684 <__LOCK_REGION_LENGTH__+0x284>
+ 5fe:	19 f0       	breq	.+6      	; 0x606 <__LOCK_REGION_LENGTH__+0x206>
 		turn_left_hard();
- 67e:	0e 94 89 00 	call	0x112	; 0x112 <turn_left_hard>
- 682:	69 cd       	rjmp	.-1326   	; 0x156 <main+0xa>
+ 600:	0e 94 5a 00 	call	0xb4	; 0xb4 <turn_left_hard>
+ 604:	69 cd       	rjmp	.-1326   	; 0xd8 <main+0x6>
 	}
 	//2 white code
 	else if(is_white(0) && is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 684:	80 e0       	ldi	r24, 0x00	; 0
+ 606:	80 e0       	ldi	r24, 0x00	; 0
+ 608:	90 e0       	ldi	r25, 0x00	; 0
+ 60a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 60e:	89 2b       	or	r24, r25
+ 610:	69 f1       	breq	.+90     	; 0x66c <__LOCK_REGION_LENGTH__+0x26c>
+ 612:	81 e0       	ldi	r24, 0x01	; 1
+ 614:	90 e0       	ldi	r25, 0x00	; 0
+ 616:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 61a:	89 2b       	or	r24, r25
+ 61c:	39 f1       	breq	.+78     	; 0x66c <__LOCK_REGION_LENGTH__+0x26c>
+ 61e:	82 e0       	ldi	r24, 0x02	; 2
+ 620:	90 e0       	ldi	r25, 0x00	; 0
+ 622:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 626:	89 2b       	or	r24, r25
+ 628:	09 f5       	brne	.+66     	; 0x66c <__LOCK_REGION_LENGTH__+0x26c>
+ 62a:	83 e0       	ldi	r24, 0x03	; 3
+ 62c:	90 e0       	ldi	r25, 0x00	; 0
+ 62e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 632:	89 2b       	or	r24, r25
+ 634:	d9 f4       	brne	.+54     	; 0x66c <__LOCK_REGION_LENGTH__+0x26c>
+ 636:	84 e0       	ldi	r24, 0x04	; 4
+ 638:	90 e0       	ldi	r25, 0x00	; 0
+ 63a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 63e:	89 2b       	or	r24, r25
+ 640:	a9 f4       	brne	.+42     	; 0x66c <__LOCK_REGION_LENGTH__+0x26c>
+ 642:	85 e0       	ldi	r24, 0x05	; 5
+ 644:	90 e0       	ldi	r25, 0x00	; 0
+ 646:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 64a:	89 2b       	or	r24, r25
+ 64c:	79 f4       	brne	.+30     	; 0x66c <__LOCK_REGION_LENGTH__+0x26c>
+ 64e:	86 e0       	ldi	r24, 0x06	; 6
+ 650:	90 e0       	ldi	r25, 0x00	; 0
+ 652:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 656:	89 2b       	or	r24, r25
+ 658:	49 f4       	brne	.+18     	; 0x66c <__LOCK_REGION_LENGTH__+0x26c>
+ 65a:	87 e0       	ldi	r24, 0x07	; 7
+ 65c:	90 e0       	ldi	r25, 0x00	; 0
+ 65e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 662:	89 2b       	or	r24, r25
+ 664:	19 f4       	brne	.+6      	; 0x66c <__LOCK_REGION_LENGTH__+0x26c>
+		turn_right_hard();
+ 666:	0e 94 5f 00 	call	0xbe	; 0xbe <turn_right_hard>
+ 66a:	36 cd       	rjmp	.-1428   	; 0xd8 <main+0x6>
+	}
+	else if(!is_white(0) && is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ 66c:	80 e0       	ldi	r24, 0x00	; 0
+ 66e:	90 e0       	ldi	r25, 0x00	; 0
+ 670:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 674:	89 2b       	or	r24, r25
+ 676:	69 f5       	brne	.+90     	; 0x6d2 <__LOCK_REGION_LENGTH__+0x2d2>
+ 678:	81 e0       	ldi	r24, 0x01	; 1
+ 67a:	90 e0       	ldi	r25, 0x00	; 0
+ 67c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 680:	89 2b       	or	r24, r25
+ 682:	39 f1       	breq	.+78     	; 0x6d2 <__LOCK_REGION_LENGTH__+0x2d2>
+ 684:	82 e0       	ldi	r24, 0x02	; 2
  686:	90 e0       	ldi	r25, 0x00	; 0
  688:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  68c:	89 2b       	or	r24, r25
- 68e:	69 f1       	breq	.+90     	; 0x6ea <__LOCK_REGION_LENGTH__+0x2ea>
- 690:	81 e0       	ldi	r24, 0x01	; 1
+ 68e:	09 f1       	breq	.+66     	; 0x6d2 <__LOCK_REGION_LENGTH__+0x2d2>
+ 690:	83 e0       	ldi	r24, 0x03	; 3
  692:	90 e0       	ldi	r25, 0x00	; 0
  694:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  698:	89 2b       	or	r24, r25
- 69a:	39 f1       	breq	.+78     	; 0x6ea <__LOCK_REGION_LENGTH__+0x2ea>
- 69c:	82 e0       	ldi	r24, 0x02	; 2
+ 69a:	d9 f4       	brne	.+54     	; 0x6d2 <__LOCK_REGION_LENGTH__+0x2d2>
+ 69c:	84 e0       	ldi	r24, 0x04	; 4
  69e:	90 e0       	ldi	r25, 0x00	; 0
  6a0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  6a4:	89 2b       	or	r24, r25
- 6a6:	09 f5       	brne	.+66     	; 0x6ea <__LOCK_REGION_LENGTH__+0x2ea>
- 6a8:	83 e0       	ldi	r24, 0x03	; 3
+ 6a6:	a9 f4       	brne	.+42     	; 0x6d2 <__LOCK_REGION_LENGTH__+0x2d2>
+ 6a8:	85 e0       	ldi	r24, 0x05	; 5
  6aa:	90 e0       	ldi	r25, 0x00	; 0
  6ac:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  6b0:	89 2b       	or	r24, r25
- 6b2:	d9 f4       	brne	.+54     	; 0x6ea <__LOCK_REGION_LENGTH__+0x2ea>
- 6b4:	84 e0       	ldi	r24, 0x04	; 4
+ 6b2:	79 f4       	brne	.+30     	; 0x6d2 <__LOCK_REGION_LENGTH__+0x2d2>
+ 6b4:	86 e0       	ldi	r24, 0x06	; 6
  6b6:	90 e0       	ldi	r25, 0x00	; 0
  6b8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  6bc:	89 2b       	or	r24, r25
- 6be:	a9 f4       	brne	.+42     	; 0x6ea <__LOCK_REGION_LENGTH__+0x2ea>
- 6c0:	85 e0       	ldi	r24, 0x05	; 5
+ 6be:	49 f4       	brne	.+18     	; 0x6d2 <__LOCK_REGION_LENGTH__+0x2d2>
+ 6c0:	87 e0       	ldi	r24, 0x07	; 7
  6c2:	90 e0       	ldi	r25, 0x00	; 0
  6c4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  6c8:	89 2b       	or	r24, r25
- 6ca:	79 f4       	brne	.+30     	; 0x6ea <__LOCK_REGION_LENGTH__+0x2ea>
- 6cc:	86 e0       	ldi	r24, 0x06	; 6
- 6ce:	90 e0       	ldi	r25, 0x00	; 0
- 6d0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 6d4:	89 2b       	or	r24, r25
- 6d6:	49 f4       	brne	.+18     	; 0x6ea <__LOCK_REGION_LENGTH__+0x2ea>
- 6d8:	87 e0       	ldi	r24, 0x07	; 7
- 6da:	90 e0       	ldi	r25, 0x00	; 0
- 6dc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 6e0:	89 2b       	or	r24, r25
- 6e2:	19 f4       	brne	.+6      	; 0x6ea <__LOCK_REGION_LENGTH__+0x2ea>
-		turn_right_hard();
- 6e4:	0e 94 95 00 	call	0x12a	; 0x12a <turn_right_hard>
- 6e8:	36 cd       	rjmp	.-1428   	; 0x156 <main+0xa>
+ 6ca:	19 f4       	brne	.+6      	; 0x6d2 <__LOCK_REGION_LENGTH__+0x2d2>
+		turn_right();
+ 6cc:	0e 94 55 00 	call	0xaa	; 0xaa <turn_right>
+ 6d0:	03 cd       	rjmp	.-1530   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 6ea:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ 6d2:	80 e0       	ldi	r24, 0x00	; 0
+ 6d4:	90 e0       	ldi	r25, 0x00	; 0
+ 6d6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 6da:	89 2b       	or	r24, r25
+ 6dc:	69 f5       	brne	.+90     	; 0x738 <__LOCK_REGION_LENGTH__+0x338>
+ 6de:	81 e0       	ldi	r24, 0x01	; 1
+ 6e0:	90 e0       	ldi	r25, 0x00	; 0
+ 6e2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 6e6:	89 2b       	or	r24, r25
+ 6e8:	39 f5       	brne	.+78     	; 0x738 <__LOCK_REGION_LENGTH__+0x338>
+ 6ea:	82 e0       	ldi	r24, 0x02	; 2
  6ec:	90 e0       	ldi	r25, 0x00	; 0
  6ee:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  6f2:	89 2b       	or	r24, r25
- 6f4:	69 f5       	brne	.+90     	; 0x750 <__LOCK_REGION_LENGTH__+0x350>
- 6f6:	81 e0       	ldi	r24, 0x01	; 1
+ 6f4:	09 f1       	breq	.+66     	; 0x738 <__LOCK_REGION_LENGTH__+0x338>
+ 6f6:	83 e0       	ldi	r24, 0x03	; 3
  6f8:	90 e0       	ldi	r25, 0x00	; 0
  6fa:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  6fe:	89 2b       	or	r24, r25
- 700:	39 f1       	breq	.+78     	; 0x750 <__LOCK_REGION_LENGTH__+0x350>
- 702:	82 e0       	ldi	r24, 0x02	; 2
+ 700:	d9 f0       	breq	.+54     	; 0x738 <__LOCK_REGION_LENGTH__+0x338>
+ 702:	84 e0       	ldi	r24, 0x04	; 4
  704:	90 e0       	ldi	r25, 0x00	; 0
  706:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  70a:	89 2b       	or	r24, r25
- 70c:	09 f1       	breq	.+66     	; 0x750 <__LOCK_REGION_LENGTH__+0x350>
- 70e:	83 e0       	ldi	r24, 0x03	; 3
+ 70c:	a9 f4       	brne	.+42     	; 0x738 <__LOCK_REGION_LENGTH__+0x338>
+ 70e:	85 e0       	ldi	r24, 0x05	; 5
  710:	90 e0       	ldi	r25, 0x00	; 0
  712:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  716:	89 2b       	or	r24, r25
- 718:	d9 f4       	brne	.+54     	; 0x750 <__LOCK_REGION_LENGTH__+0x350>
- 71a:	84 e0       	ldi	r24, 0x04	; 4
+ 718:	79 f4       	brne	.+30     	; 0x738 <__LOCK_REGION_LENGTH__+0x338>
+ 71a:	86 e0       	ldi	r24, 0x06	; 6
  71c:	90 e0       	ldi	r25, 0x00	; 0
  71e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  722:	89 2b       	or	r24, r25
- 724:	a9 f4       	brne	.+42     	; 0x750 <__LOCK_REGION_LENGTH__+0x350>
- 726:	85 e0       	ldi	r24, 0x05	; 5
+ 724:	49 f4       	brne	.+18     	; 0x738 <__LOCK_REGION_LENGTH__+0x338>
+ 726:	87 e0       	ldi	r24, 0x07	; 7
  728:	90 e0       	ldi	r25, 0x00	; 0
  72a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  72e:	89 2b       	or	r24, r25
- 730:	79 f4       	brne	.+30     	; 0x750 <__LOCK_REGION_LENGTH__+0x350>
- 732:	86 e0       	ldi	r24, 0x06	; 6
- 734:	90 e0       	ldi	r25, 0x00	; 0
- 736:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 73a:	89 2b       	or	r24, r25
- 73c:	49 f4       	brne	.+18     	; 0x750 <__LOCK_REGION_LENGTH__+0x350>
- 73e:	87 e0       	ldi	r24, 0x07	; 7
- 740:	90 e0       	ldi	r25, 0x00	; 0
- 742:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 746:	89 2b       	or	r24, r25
- 748:	19 f4       	brne	.+6      	; 0x750 <__LOCK_REGION_LENGTH__+0x350>
+ 730:	19 f4       	brne	.+6      	; 0x738 <__LOCK_REGION_LENGTH__+0x338>
 		turn_right();
- 74a:	0e 94 7b 00 	call	0xf6	; 0xf6 <turn_right>
- 74e:	03 cd       	rjmp	.-1530   	; 0x156 <main+0xa>
+ 732:	0e 94 55 00 	call	0xaa	; 0xaa <turn_right>
+ 736:	d0 cc       	rjmp	.-1632   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 750:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ 738:	80 e0       	ldi	r24, 0x00	; 0
+ 73a:	90 e0       	ldi	r25, 0x00	; 0
+ 73c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 740:	89 2b       	or	r24, r25
+ 742:	69 f5       	brne	.+90     	; 0x79e <__LOCK_REGION_LENGTH__+0x39e>
+ 744:	81 e0       	ldi	r24, 0x01	; 1
+ 746:	90 e0       	ldi	r25, 0x00	; 0
+ 748:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 74c:	89 2b       	or	r24, r25
+ 74e:	39 f5       	brne	.+78     	; 0x79e <__LOCK_REGION_LENGTH__+0x39e>
+ 750:	82 e0       	ldi	r24, 0x02	; 2
  752:	90 e0       	ldi	r25, 0x00	; 0
  754:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  758:	89 2b       	or	r24, r25
- 75a:	69 f5       	brne	.+90     	; 0x7b6 <__LOCK_REGION_LENGTH__+0x3b6>
- 75c:	81 e0       	ldi	r24, 0x01	; 1
+ 75a:	09 f5       	brne	.+66     	; 0x79e <__LOCK_REGION_LENGTH__+0x39e>
+ 75c:	83 e0       	ldi	r24, 0x03	; 3
  75e:	90 e0       	ldi	r25, 0x00	; 0
  760:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  764:	89 2b       	or	r24, r25
- 766:	39 f5       	brne	.+78     	; 0x7b6 <__LOCK_REGION_LENGTH__+0x3b6>
- 768:	82 e0       	ldi	r24, 0x02	; 2
+ 766:	d9 f0       	breq	.+54     	; 0x79e <__LOCK_REGION_LENGTH__+0x39e>
+ 768:	84 e0       	ldi	r24, 0x04	; 4
  76a:	90 e0       	ldi	r25, 0x00	; 0
  76c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  770:	89 2b       	or	r24, r25
- 772:	09 f1       	breq	.+66     	; 0x7b6 <__LOCK_REGION_LENGTH__+0x3b6>
- 774:	83 e0       	ldi	r24, 0x03	; 3
+ 772:	a9 f0       	breq	.+42     	; 0x79e <__LOCK_REGION_LENGTH__+0x39e>
+ 774:	85 e0       	ldi	r24, 0x05	; 5
  776:	90 e0       	ldi	r25, 0x00	; 0
  778:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  77c:	89 2b       	or	r24, r25
- 77e:	d9 f0       	breq	.+54     	; 0x7b6 <__LOCK_REGION_LENGTH__+0x3b6>
- 780:	84 e0       	ldi	r24, 0x04	; 4
+ 77e:	79 f4       	brne	.+30     	; 0x79e <__LOCK_REGION_LENGTH__+0x39e>
+ 780:	86 e0       	ldi	r24, 0x06	; 6
  782:	90 e0       	ldi	r25, 0x00	; 0
  784:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  788:	89 2b       	or	r24, r25
- 78a:	a9 f4       	brne	.+42     	; 0x7b6 <__LOCK_REGION_LENGTH__+0x3b6>
- 78c:	85 e0       	ldi	r24, 0x05	; 5
+ 78a:	49 f4       	brne	.+18     	; 0x79e <__LOCK_REGION_LENGTH__+0x39e>
+ 78c:	87 e0       	ldi	r24, 0x07	; 7
  78e:	90 e0       	ldi	r25, 0x00	; 0
  790:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  794:	89 2b       	or	r24, r25
- 796:	79 f4       	brne	.+30     	; 0x7b6 <__LOCK_REGION_LENGTH__+0x3b6>
- 798:	86 e0       	ldi	r24, 0x06	; 6
- 79a:	90 e0       	ldi	r25, 0x00	; 0
- 79c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 7a0:	89 2b       	or	r24, r25
- 7a2:	49 f4       	brne	.+18     	; 0x7b6 <__LOCK_REGION_LENGTH__+0x3b6>
- 7a4:	87 e0       	ldi	r24, 0x07	; 7
- 7a6:	90 e0       	ldi	r25, 0x00	; 0
- 7a8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 7ac:	89 2b       	or	r24, r25
- 7ae:	19 f4       	brne	.+6      	; 0x7b6 <__LOCK_REGION_LENGTH__+0x3b6>
-		turn_right();
- 7b0:	0e 94 7b 00 	call	0xf6	; 0xf6 <turn_right>
- 7b4:	d0 cc       	rjmp	.-1632   	; 0x156 <main+0xa>
+ 796:	19 f4       	brne	.+6      	; 0x79e <__LOCK_REGION_LENGTH__+0x39e>
+		move_forward();
+ 798:	0e 94 44 00 	call	0x88	; 0x88 <move_forward>
+ 79c:	9d cc       	rjmp	.-1734   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 7b6:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
+ 79e:	80 e0       	ldi	r24, 0x00	; 0
+ 7a0:	90 e0       	ldi	r25, 0x00	; 0
+ 7a2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 7a6:	89 2b       	or	r24, r25
+ 7a8:	69 f5       	brne	.+90     	; 0x804 <__LOCK_REGION_LENGTH__+0x404>
+ 7aa:	81 e0       	ldi	r24, 0x01	; 1
+ 7ac:	90 e0       	ldi	r25, 0x00	; 0
+ 7ae:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 7b2:	89 2b       	or	r24, r25
+ 7b4:	39 f5       	brne	.+78     	; 0x804 <__LOCK_REGION_LENGTH__+0x404>
+ 7b6:	82 e0       	ldi	r24, 0x02	; 2
  7b8:	90 e0       	ldi	r25, 0x00	; 0
  7ba:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  7be:	89 2b       	or	r24, r25
- 7c0:	69 f5       	brne	.+90     	; 0x81c <__LOCK_REGION_LENGTH__+0x41c>
- 7c2:	81 e0       	ldi	r24, 0x01	; 1
+ 7c0:	09 f5       	brne	.+66     	; 0x804 <__LOCK_REGION_LENGTH__+0x404>
+ 7c2:	83 e0       	ldi	r24, 0x03	; 3
  7c4:	90 e0       	ldi	r25, 0x00	; 0
  7c6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  7ca:	89 2b       	or	r24, r25
- 7cc:	39 f5       	brne	.+78     	; 0x81c <__LOCK_REGION_LENGTH__+0x41c>
- 7ce:	82 e0       	ldi	r24, 0x02	; 2
+ 7cc:	d9 f4       	brne	.+54     	; 0x804 <__LOCK_REGION_LENGTH__+0x404>
+ 7ce:	84 e0       	ldi	r24, 0x04	; 4
  7d0:	90 e0       	ldi	r25, 0x00	; 0
  7d2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  7d6:	89 2b       	or	r24, r25
- 7d8:	09 f5       	brne	.+66     	; 0x81c <__LOCK_REGION_LENGTH__+0x41c>
- 7da:	83 e0       	ldi	r24, 0x03	; 3
+ 7d8:	a9 f0       	breq	.+42     	; 0x804 <__LOCK_REGION_LENGTH__+0x404>
+ 7da:	85 e0       	ldi	r24, 0x05	; 5
  7dc:	90 e0       	ldi	r25, 0x00	; 0
  7de:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  7e2:	89 2b       	or	r24, r25
- 7e4:	d9 f0       	breq	.+54     	; 0x81c <__LOCK_REGION_LENGTH__+0x41c>
- 7e6:	84 e0       	ldi	r24, 0x04	; 4
+ 7e4:	79 f0       	breq	.+30     	; 0x804 <__LOCK_REGION_LENGTH__+0x404>
+ 7e6:	86 e0       	ldi	r24, 0x06	; 6
  7e8:	90 e0       	ldi	r25, 0x00	; 0
  7ea:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  7ee:	89 2b       	or	r24, r25
- 7f0:	a9 f0       	breq	.+42     	; 0x81c <__LOCK_REGION_LENGTH__+0x41c>
- 7f2:	85 e0       	ldi	r24, 0x05	; 5
+ 7f0:	49 f4       	brne	.+18     	; 0x804 <__LOCK_REGION_LENGTH__+0x404>
+ 7f2:	87 e0       	ldi	r24, 0x07	; 7
  7f4:	90 e0       	ldi	r25, 0x00	; 0
  7f6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  7fa:	89 2b       	or	r24, r25
- 7fc:	79 f4       	brne	.+30     	; 0x81c <__LOCK_REGION_LENGTH__+0x41c>
- 7fe:	86 e0       	ldi	r24, 0x06	; 6
- 800:	90 e0       	ldi	r25, 0x00	; 0
- 802:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 806:	89 2b       	or	r24, r25
- 808:	49 f4       	brne	.+18     	; 0x81c <__LOCK_REGION_LENGTH__+0x41c>
- 80a:	87 e0       	ldi	r24, 0x07	; 7
- 80c:	90 e0       	ldi	r25, 0x00	; 0
- 80e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 812:	89 2b       	or	r24, r25
- 814:	19 f4       	brne	.+6      	; 0x81c <__LOCK_REGION_LENGTH__+0x41c>
-		move_forward();
- 816:	0e 94 55 00 	call	0xaa	; 0xaa <move_forward>
- 81a:	9d cc       	rjmp	.-1734   	; 0x156 <main+0xa>
+ 7fc:	19 f4       	brne	.+6      	; 0x804 <__LOCK_REGION_LENGTH__+0x404>
+		turn_left();
+ 7fe:	0e 94 50 00 	call	0xa0	; 0xa0 <turn_left>
+ 802:	6a cc       	rjmp	.-1836   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
- 81c:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && is_white(5) && is_white(6) && !is_white(7)){
+ 804:	80 e0       	ldi	r24, 0x00	; 0
+ 806:	90 e0       	ldi	r25, 0x00	; 0
+ 808:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 80c:	89 2b       	or	r24, r25
+ 80e:	69 f5       	brne	.+90     	; 0x86a <__stack+0xb>
+ 810:	81 e0       	ldi	r24, 0x01	; 1
+ 812:	90 e0       	ldi	r25, 0x00	; 0
+ 814:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 818:	89 2b       	or	r24, r25
+ 81a:	39 f5       	brne	.+78     	; 0x86a <__stack+0xb>
+ 81c:	82 e0       	ldi	r24, 0x02	; 2
  81e:	90 e0       	ldi	r25, 0x00	; 0
  820:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  824:	89 2b       	or	r24, r25
- 826:	69 f5       	brne	.+90     	; 0x882 <__stack+0x23>
- 828:	81 e0       	ldi	r24, 0x01	; 1
+ 826:	09 f5       	brne	.+66     	; 0x86a <__stack+0xb>
+ 828:	83 e0       	ldi	r24, 0x03	; 3
  82a:	90 e0       	ldi	r25, 0x00	; 0
  82c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  830:	89 2b       	or	r24, r25
- 832:	39 f5       	brne	.+78     	; 0x882 <__stack+0x23>
- 834:	82 e0       	ldi	r24, 0x02	; 2
+ 832:	d9 f4       	brne	.+54     	; 0x86a <__stack+0xb>
+ 834:	84 e0       	ldi	r24, 0x04	; 4
  836:	90 e0       	ldi	r25, 0x00	; 0
  838:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  83c:	89 2b       	or	r24, r25
- 83e:	09 f5       	brne	.+66     	; 0x882 <__stack+0x23>
- 840:	83 e0       	ldi	r24, 0x03	; 3
+ 83e:	a9 f4       	brne	.+42     	; 0x86a <__stack+0xb>
+ 840:	85 e0       	ldi	r24, 0x05	; 5
  842:	90 e0       	ldi	r25, 0x00	; 0
  844:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  848:	89 2b       	or	r24, r25
- 84a:	d9 f4       	brne	.+54     	; 0x882 <__stack+0x23>
- 84c:	84 e0       	ldi	r24, 0x04	; 4
+ 84a:	79 f0       	breq	.+30     	; 0x86a <__stack+0xb>
+ 84c:	86 e0       	ldi	r24, 0x06	; 6
  84e:	90 e0       	ldi	r25, 0x00	; 0
  850:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  854:	89 2b       	or	r24, r25
- 856:	a9 f0       	breq	.+42     	; 0x882 <__stack+0x23>
- 858:	85 e0       	ldi	r24, 0x05	; 5
+ 856:	49 f0       	breq	.+18     	; 0x86a <__stack+0xb>
+ 858:	87 e0       	ldi	r24, 0x07	; 7
  85a:	90 e0       	ldi	r25, 0x00	; 0
  85c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  860:	89 2b       	or	r24, r25
- 862:	79 f0       	breq	.+30     	; 0x882 <__stack+0x23>
- 864:	86 e0       	ldi	r24, 0x06	; 6
- 866:	90 e0       	ldi	r25, 0x00	; 0
- 868:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 86c:	89 2b       	or	r24, r25
- 86e:	49 f4       	brne	.+18     	; 0x882 <__stack+0x23>
- 870:	87 e0       	ldi	r24, 0x07	; 7
- 872:	90 e0       	ldi	r25, 0x00	; 0
- 874:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 878:	89 2b       	or	r24, r25
- 87a:	19 f4       	brne	.+6      	; 0x882 <__stack+0x23>
+ 862:	19 f4       	brne	.+6      	; 0x86a <__stack+0xb>
 		turn_left();
- 87c:	0e 94 6d 00 	call	0xda	; 0xda <turn_left>
- 880:	6a cc       	rjmp	.-1836   	; 0x156 <main+0xa>
+ 864:	0e 94 50 00 	call	0xa0	; 0xa0 <turn_left>
+ 868:	37 cc       	rjmp	.-1938   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && is_white(5) && is_white(6) && !is_white(7)){
- 882:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && is_white(6) && is_white(7)){
+ 86a:	80 e0       	ldi	r24, 0x00	; 0
+ 86c:	90 e0       	ldi	r25, 0x00	; 0
+ 86e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 872:	89 2b       	or	r24, r25
+ 874:	69 f5       	brne	.+90     	; 0x8d0 <__stack+0x71>
+ 876:	81 e0       	ldi	r24, 0x01	; 1
+ 878:	90 e0       	ldi	r25, 0x00	; 0
+ 87a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 87e:	89 2b       	or	r24, r25
+ 880:	39 f5       	brne	.+78     	; 0x8d0 <__stack+0x71>
+ 882:	82 e0       	ldi	r24, 0x02	; 2
  884:	90 e0       	ldi	r25, 0x00	; 0
  886:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  88a:	89 2b       	or	r24, r25
- 88c:	69 f5       	brne	.+90     	; 0x8e8 <__stack+0x89>
- 88e:	81 e0       	ldi	r24, 0x01	; 1
+ 88c:	09 f5       	brne	.+66     	; 0x8d0 <__stack+0x71>
+ 88e:	83 e0       	ldi	r24, 0x03	; 3
  890:	90 e0       	ldi	r25, 0x00	; 0
  892:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  896:	89 2b       	or	r24, r25
- 898:	39 f5       	brne	.+78     	; 0x8e8 <__stack+0x89>
- 89a:	82 e0       	ldi	r24, 0x02	; 2
+ 898:	d9 f4       	brne	.+54     	; 0x8d0 <__stack+0x71>
+ 89a:	84 e0       	ldi	r24, 0x04	; 4
  89c:	90 e0       	ldi	r25, 0x00	; 0
  89e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  8a2:	89 2b       	or	r24, r25
- 8a4:	09 f5       	brne	.+66     	; 0x8e8 <__stack+0x89>
- 8a6:	83 e0       	ldi	r24, 0x03	; 3
+ 8a4:	a9 f4       	brne	.+42     	; 0x8d0 <__stack+0x71>
+ 8a6:	85 e0       	ldi	r24, 0x05	; 5
  8a8:	90 e0       	ldi	r25, 0x00	; 0
  8aa:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  8ae:	89 2b       	or	r24, r25
- 8b0:	d9 f4       	brne	.+54     	; 0x8e8 <__stack+0x89>
- 8b2:	84 e0       	ldi	r24, 0x04	; 4
+ 8b0:	79 f4       	brne	.+30     	; 0x8d0 <__stack+0x71>
+ 8b2:	86 e0       	ldi	r24, 0x06	; 6
  8b4:	90 e0       	ldi	r25, 0x00	; 0
  8b6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  8ba:	89 2b       	or	r24, r25
- 8bc:	a9 f4       	brne	.+42     	; 0x8e8 <__stack+0x89>
- 8be:	85 e0       	ldi	r24, 0x05	; 5
+ 8bc:	49 f0       	breq	.+18     	; 0x8d0 <__stack+0x71>
+ 8be:	87 e0       	ldi	r24, 0x07	; 7
  8c0:	90 e0       	ldi	r25, 0x00	; 0
  8c2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  8c6:	89 2b       	or	r24, r25
- 8c8:	79 f0       	breq	.+30     	; 0x8e8 <__stack+0x89>
- 8ca:	86 e0       	ldi	r24, 0x06	; 6
- 8cc:	90 e0       	ldi	r25, 0x00	; 0
- 8ce:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 8d2:	89 2b       	or	r24, r25
- 8d4:	49 f0       	breq	.+18     	; 0x8e8 <__stack+0x89>
- 8d6:	87 e0       	ldi	r24, 0x07	; 7
- 8d8:	90 e0       	ldi	r25, 0x00	; 0
- 8da:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 8de:	89 2b       	or	r24, r25
- 8e0:	19 f4       	brne	.+6      	; 0x8e8 <__stack+0x89>
-		turn_left();
- 8e2:	0e 94 6d 00 	call	0xda	; 0xda <turn_left>
- 8e6:	37 cc       	rjmp	.-1938   	; 0x156 <main+0xa>
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && is_white(6) && is_white(7)){
- 8e8:	80 e0       	ldi	r24, 0x00	; 0
- 8ea:	90 e0       	ldi	r25, 0x00	; 0
- 8ec:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 8f0:	89 2b       	or	r24, r25
- 8f2:	69 f5       	brne	.+90     	; 0x94e <__stack+0xef>
- 8f4:	81 e0       	ldi	r24, 0x01	; 1
- 8f6:	90 e0       	ldi	r25, 0x00	; 0
- 8f8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 8fc:	89 2b       	or	r24, r25
- 8fe:	39 f5       	brne	.+78     	; 0x94e <__stack+0xef>
- 900:	82 e0       	ldi	r24, 0x02	; 2
- 902:	90 e0       	ldi	r25, 0x00	; 0
- 904:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 908:	89 2b       	or	r24, r25
- 90a:	09 f5       	brne	.+66     	; 0x94e <__stack+0xef>
- 90c:	83 e0       	ldi	r24, 0x03	; 3
- 90e:	90 e0       	ldi	r25, 0x00	; 0
- 910:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 914:	89 2b       	or	r24, r25
- 916:	d9 f4       	brne	.+54     	; 0x94e <__stack+0xef>
- 918:	84 e0       	ldi	r24, 0x04	; 4
- 91a:	90 e0       	ldi	r25, 0x00	; 0
- 91c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 920:	89 2b       	or	r24, r25
- 922:	a9 f4       	brne	.+42     	; 0x94e <__stack+0xef>
- 924:	85 e0       	ldi	r24, 0x05	; 5
- 926:	90 e0       	ldi	r25, 0x00	; 0
- 928:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 92c:	89 2b       	or	r24, r25
- 92e:	79 f4       	brne	.+30     	; 0x94e <__stack+0xef>
- 930:	86 e0       	ldi	r24, 0x06	; 6
- 932:	90 e0       	ldi	r25, 0x00	; 0
- 934:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 938:	89 2b       	or	r24, r25
- 93a:	49 f0       	breq	.+18     	; 0x94e <__stack+0xef>
- 93c:	87 e0       	ldi	r24, 0x07	; 7
- 93e:	90 e0       	ldi	r25, 0x00	; 0
- 940:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 944:	89 2b       	or	r24, r25
- 946:	19 f0       	breq	.+6      	; 0x94e <__stack+0xef>
+ 8c8:	19 f0       	breq	.+6      	; 0x8d0 <__stack+0x71>
 		turn_left_hard();
- 948:	0e 94 89 00 	call	0x112	; 0x112 <turn_left_hard>
- 94c:	04 cc       	rjmp	.-2040   	; 0x156 <main+0xa>
+ 8ca:	0e 94 5a 00 	call	0xb4	; 0xb4 <turn_left_hard>
+ 8ce:	04 cc       	rjmp	.-2040   	; 0xd8 <main+0x6>
 	}
 	//1 line code
 	else if(is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 94e:	80 e0       	ldi	r24, 0x00	; 0
+ 8d0:	80 e0       	ldi	r24, 0x00	; 0
+ 8d2:	90 e0       	ldi	r25, 0x00	; 0
+ 8d4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 8d8:	89 2b       	or	r24, r25
+ 8da:	69 f1       	breq	.+90     	; 0x936 <__stack+0xd7>
+ 8dc:	81 e0       	ldi	r24, 0x01	; 1
+ 8de:	90 e0       	ldi	r25, 0x00	; 0
+ 8e0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 8e4:	89 2b       	or	r24, r25
+ 8e6:	39 f5       	brne	.+78     	; 0x936 <__stack+0xd7>
+ 8e8:	82 e0       	ldi	r24, 0x02	; 2
+ 8ea:	90 e0       	ldi	r25, 0x00	; 0
+ 8ec:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 8f0:	89 2b       	or	r24, r25
+ 8f2:	09 f5       	brne	.+66     	; 0x936 <__stack+0xd7>
+ 8f4:	83 e0       	ldi	r24, 0x03	; 3
+ 8f6:	90 e0       	ldi	r25, 0x00	; 0
+ 8f8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 8fc:	89 2b       	or	r24, r25
+ 8fe:	d9 f4       	brne	.+54     	; 0x936 <__stack+0xd7>
+ 900:	84 e0       	ldi	r24, 0x04	; 4
+ 902:	90 e0       	ldi	r25, 0x00	; 0
+ 904:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 908:	89 2b       	or	r24, r25
+ 90a:	a9 f4       	brne	.+42     	; 0x936 <__stack+0xd7>
+ 90c:	85 e0       	ldi	r24, 0x05	; 5
+ 90e:	90 e0       	ldi	r25, 0x00	; 0
+ 910:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 914:	89 2b       	or	r24, r25
+ 916:	79 f4       	brne	.+30     	; 0x936 <__stack+0xd7>
+ 918:	86 e0       	ldi	r24, 0x06	; 6
+ 91a:	90 e0       	ldi	r25, 0x00	; 0
+ 91c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 920:	89 2b       	or	r24, r25
+ 922:	49 f4       	brne	.+18     	; 0x936 <__stack+0xd7>
+ 924:	87 e0       	ldi	r24, 0x07	; 7
+ 926:	90 e0       	ldi	r25, 0x00	; 0
+ 928:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 92c:	89 2b       	or	r24, r25
+ 92e:	19 f4       	brne	.+6      	; 0x936 <__stack+0xd7>
+		turn_right_hard();
+ 930:	0e 94 5f 00 	call	0xbe	; 0xbe <turn_right_hard>
+ 934:	d1 cb       	rjmp	.-2142   	; 0xd8 <main+0x6>
+	}
+	else if(!is_white(0) && is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ 936:	80 e0       	ldi	r24, 0x00	; 0
+ 938:	90 e0       	ldi	r25, 0x00	; 0
+ 93a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 93e:	89 2b       	or	r24, r25
+ 940:	69 f5       	brne	.+90     	; 0x99c <__stack+0x13d>
+ 942:	81 e0       	ldi	r24, 0x01	; 1
+ 944:	90 e0       	ldi	r25, 0x00	; 0
+ 946:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 94a:	89 2b       	or	r24, r25
+ 94c:	39 f1       	breq	.+78     	; 0x99c <__stack+0x13d>
+ 94e:	82 e0       	ldi	r24, 0x02	; 2
  950:	90 e0       	ldi	r25, 0x00	; 0
  952:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  956:	89 2b       	or	r24, r25
- 958:	69 f1       	breq	.+90     	; 0x9b4 <__stack+0x155>
- 95a:	81 e0       	ldi	r24, 0x01	; 1
+ 958:	09 f5       	brne	.+66     	; 0x99c <__stack+0x13d>
+ 95a:	83 e0       	ldi	r24, 0x03	; 3
  95c:	90 e0       	ldi	r25, 0x00	; 0
  95e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  962:	89 2b       	or	r24, r25
- 964:	39 f5       	brne	.+78     	; 0x9b4 <__stack+0x155>
- 966:	82 e0       	ldi	r24, 0x02	; 2
+ 964:	d9 f4       	brne	.+54     	; 0x99c <__stack+0x13d>
+ 966:	84 e0       	ldi	r24, 0x04	; 4
  968:	90 e0       	ldi	r25, 0x00	; 0
  96a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  96e:	89 2b       	or	r24, r25
- 970:	09 f5       	brne	.+66     	; 0x9b4 <__stack+0x155>
- 972:	83 e0       	ldi	r24, 0x03	; 3
+ 970:	a9 f4       	brne	.+42     	; 0x99c <__stack+0x13d>
+ 972:	85 e0       	ldi	r24, 0x05	; 5
  974:	90 e0       	ldi	r25, 0x00	; 0
  976:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  97a:	89 2b       	or	r24, r25
- 97c:	d9 f4       	brne	.+54     	; 0x9b4 <__stack+0x155>
- 97e:	84 e0       	ldi	r24, 0x04	; 4
+ 97c:	79 f4       	brne	.+30     	; 0x99c <__stack+0x13d>
+ 97e:	86 e0       	ldi	r24, 0x06	; 6
  980:	90 e0       	ldi	r25, 0x00	; 0
  982:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  986:	89 2b       	or	r24, r25
- 988:	a9 f4       	brne	.+42     	; 0x9b4 <__stack+0x155>
- 98a:	85 e0       	ldi	r24, 0x05	; 5
+ 988:	49 f4       	brne	.+18     	; 0x99c <__stack+0x13d>
+ 98a:	87 e0       	ldi	r24, 0x07	; 7
  98c:	90 e0       	ldi	r25, 0x00	; 0
  98e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  992:	89 2b       	or	r24, r25
- 994:	79 f4       	brne	.+30     	; 0x9b4 <__stack+0x155>
- 996:	86 e0       	ldi	r24, 0x06	; 6
- 998:	90 e0       	ldi	r25, 0x00	; 0
- 99a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 99e:	89 2b       	or	r24, r25
- 9a0:	49 f4       	brne	.+18     	; 0x9b4 <__stack+0x155>
- 9a2:	87 e0       	ldi	r24, 0x07	; 7
- 9a4:	90 e0       	ldi	r25, 0x00	; 0
- 9a6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- 9aa:	89 2b       	or	r24, r25
- 9ac:	19 f4       	brne	.+6      	; 0x9b4 <__stack+0x155>
-		turn_right_hard();
- 9ae:	0e 94 95 00 	call	0x12a	; 0x12a <turn_right_hard>
- 9b2:	d1 cb       	rjmp	.-2142   	; 0x156 <main+0xa>
+ 994:	19 f4       	brne	.+6      	; 0x99c <__stack+0x13d>
+		turn_right();
+ 996:	0e 94 55 00 	call	0xaa	; 0xaa <turn_right>
+ 99a:	9e cb       	rjmp	.-2244   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- 9b4:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ 99c:	80 e0       	ldi	r24, 0x00	; 0
+ 99e:	90 e0       	ldi	r25, 0x00	; 0
+ 9a0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 9a4:	89 2b       	or	r24, r25
+ 9a6:	69 f5       	brne	.+90     	; 0xa02 <__stack+0x1a3>
+ 9a8:	81 e0       	ldi	r24, 0x01	; 1
+ 9aa:	90 e0       	ldi	r25, 0x00	; 0
+ 9ac:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ 9b0:	89 2b       	or	r24, r25
+ 9b2:	39 f5       	brne	.+78     	; 0xa02 <__stack+0x1a3>
+ 9b4:	82 e0       	ldi	r24, 0x02	; 2
  9b6:	90 e0       	ldi	r25, 0x00	; 0
  9b8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  9bc:	89 2b       	or	r24, r25
- 9be:	69 f5       	brne	.+90     	; 0xa1a <__stack+0x1bb>
- 9c0:	81 e0       	ldi	r24, 0x01	; 1
+ 9be:	09 f1       	breq	.+66     	; 0xa02 <__stack+0x1a3>
+ 9c0:	83 e0       	ldi	r24, 0x03	; 3
  9c2:	90 e0       	ldi	r25, 0x00	; 0
  9c4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  9c8:	89 2b       	or	r24, r25
- 9ca:	39 f1       	breq	.+78     	; 0xa1a <__stack+0x1bb>
- 9cc:	82 e0       	ldi	r24, 0x02	; 2
+ 9ca:	d9 f4       	brne	.+54     	; 0xa02 <__stack+0x1a3>
+ 9cc:	84 e0       	ldi	r24, 0x04	; 4
  9ce:	90 e0       	ldi	r25, 0x00	; 0
  9d0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  9d4:	89 2b       	or	r24, r25
- 9d6:	09 f5       	brne	.+66     	; 0xa1a <__stack+0x1bb>
- 9d8:	83 e0       	ldi	r24, 0x03	; 3
+ 9d6:	a9 f4       	brne	.+42     	; 0xa02 <__stack+0x1a3>
+ 9d8:	85 e0       	ldi	r24, 0x05	; 5
  9da:	90 e0       	ldi	r25, 0x00	; 0
  9dc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  9e0:	89 2b       	or	r24, r25
- 9e2:	d9 f4       	brne	.+54     	; 0xa1a <__stack+0x1bb>
- 9e4:	84 e0       	ldi	r24, 0x04	; 4
+ 9e2:	79 f4       	brne	.+30     	; 0xa02 <__stack+0x1a3>
+ 9e4:	86 e0       	ldi	r24, 0x06	; 6
  9e6:	90 e0       	ldi	r25, 0x00	; 0
  9e8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  9ec:	89 2b       	or	r24, r25
- 9ee:	a9 f4       	brne	.+42     	; 0xa1a <__stack+0x1bb>
- 9f0:	85 e0       	ldi	r24, 0x05	; 5
+ 9ee:	49 f4       	brne	.+18     	; 0xa02 <__stack+0x1a3>
+ 9f0:	87 e0       	ldi	r24, 0x07	; 7
  9f2:	90 e0       	ldi	r25, 0x00	; 0
  9f4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  9f8:	89 2b       	or	r24, r25
- 9fa:	79 f4       	brne	.+30     	; 0xa1a <__stack+0x1bb>
- 9fc:	86 e0       	ldi	r24, 0x06	; 6
- 9fe:	90 e0       	ldi	r25, 0x00	; 0
- a00:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- a04:	89 2b       	or	r24, r25
- a06:	49 f4       	brne	.+18     	; 0xa1a <__stack+0x1bb>
- a08:	87 e0       	ldi	r24, 0x07	; 7
- a0a:	90 e0       	ldi	r25, 0x00	; 0
- a0c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- a10:	89 2b       	or	r24, r25
- a12:	19 f4       	brne	.+6      	; 0xa1a <__stack+0x1bb>
+ 9fa:	19 f4       	brne	.+6      	; 0xa02 <__stack+0x1a3>
 		turn_right();
- a14:	0e 94 7b 00 	call	0xf6	; 0xf6 <turn_right>
- a18:	9e cb       	rjmp	.-2244   	; 0x156 <main+0xa>
+ 9fc:	0e 94 55 00 	call	0xaa	; 0xaa <turn_right>
+ a00:	6b cb       	rjmp	.-2346   	; 0xd8 <main+0x6>
 	}
 	else if(!is_white(0) && !is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- a1a:	80 e0       	ldi	r24, 0x00	; 0
+ a02:	80 e0       	ldi	r24, 0x00	; 0
+ a04:	90 e0       	ldi	r25, 0x00	; 0
+ a06:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ a0a:	89 2b       	or	r24, r25
+ a0c:	69 f5       	brne	.+90     	; 0xa68 <__stack+0x209>
+ a0e:	81 e0       	ldi	r24, 0x01	; 1
+ a10:	90 e0       	ldi	r25, 0x00	; 0
+ a12:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ a16:	89 2b       	or	r24, r25
+ a18:	39 f5       	brne	.+78     	; 0xa68 <__stack+0x209>
+ a1a:	82 e0       	ldi	r24, 0x02	; 2
  a1c:	90 e0       	ldi	r25, 0x00	; 0
  a1e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  a22:	89 2b       	or	r24, r25
- a24:	69 f5       	brne	.+90     	; 0xa80 <__stack+0x221>
- a26:	81 e0       	ldi	r24, 0x01	; 1
+ a24:	09 f1       	breq	.+66     	; 0xa68 <__stack+0x209>
+ a26:	83 e0       	ldi	r24, 0x03	; 3
  a28:	90 e0       	ldi	r25, 0x00	; 0
  a2a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  a2e:	89 2b       	or	r24, r25
- a30:	39 f5       	brne	.+78     	; 0xa80 <__stack+0x221>
- a32:	82 e0       	ldi	r24, 0x02	; 2
+ a30:	d9 f4       	brne	.+54     	; 0xa68 <__stack+0x209>
+ a32:	84 e0       	ldi	r24, 0x04	; 4
  a34:	90 e0       	ldi	r25, 0x00	; 0
  a36:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  a3a:	89 2b       	or	r24, r25
- a3c:	09 f1       	breq	.+66     	; 0xa80 <__stack+0x221>
- a3e:	83 e0       	ldi	r24, 0x03	; 3
+ a3c:	a9 f4       	brne	.+42     	; 0xa68 <__stack+0x209>
+ a3e:	85 e0       	ldi	r24, 0x05	; 5
  a40:	90 e0       	ldi	r25, 0x00	; 0
  a42:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  a46:	89 2b       	or	r24, r25
- a48:	d9 f4       	brne	.+54     	; 0xa80 <__stack+0x221>
- a4a:	84 e0       	ldi	r24, 0x04	; 4
+ a48:	79 f4       	brne	.+30     	; 0xa68 <__stack+0x209>
+ a4a:	86 e0       	ldi	r24, 0x06	; 6
  a4c:	90 e0       	ldi	r25, 0x00	; 0
  a4e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  a52:	89 2b       	or	r24, r25
- a54:	a9 f4       	brne	.+42     	; 0xa80 <__stack+0x221>
- a56:	85 e0       	ldi	r24, 0x05	; 5
+ a54:	49 f4       	brne	.+18     	; 0xa68 <__stack+0x209>
+ a56:	87 e0       	ldi	r24, 0x07	; 7
  a58:	90 e0       	ldi	r25, 0x00	; 0
  a5a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  a5e:	89 2b       	or	r24, r25
- a60:	79 f4       	brne	.+30     	; 0xa80 <__stack+0x221>
- a62:	86 e0       	ldi	r24, 0x06	; 6
- a64:	90 e0       	ldi	r25, 0x00	; 0
- a66:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- a6a:	89 2b       	or	r24, r25
- a6c:	49 f4       	brne	.+18     	; 0xa80 <__stack+0x221>
- a6e:	87 e0       	ldi	r24, 0x07	; 7
- a70:	90 e0       	ldi	r25, 0x00	; 0
- a72:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- a76:	89 2b       	or	r24, r25
- a78:	19 f4       	brne	.+6      	; 0xa80 <__stack+0x221>
+ a60:	19 f4       	brne	.+6      	; 0xa68 <__stack+0x209>
 		turn_right();
- a7a:	0e 94 7b 00 	call	0xf6	; 0xf6 <turn_right>
- a7e:	6b cb       	rjmp	.-2346   	; 0x156 <main+0xa>
+ a62:	0e 94 55 00 	call	0xaa	; 0xaa <turn_right>
+ a66:	38 cb       	rjmp	.-2448   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- a80:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ a68:	80 e0       	ldi	r24, 0x00	; 0
+ a6a:	90 e0       	ldi	r25, 0x00	; 0
+ a6c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ a70:	89 2b       	or	r24, r25
+ a72:	69 f5       	brne	.+90     	; 0xace <__stack+0x26f>
+ a74:	81 e0       	ldi	r24, 0x01	; 1
+ a76:	90 e0       	ldi	r25, 0x00	; 0
+ a78:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ a7c:	89 2b       	or	r24, r25
+ a7e:	39 f5       	brne	.+78     	; 0xace <__stack+0x26f>
+ a80:	82 e0       	ldi	r24, 0x02	; 2
  a82:	90 e0       	ldi	r25, 0x00	; 0
  a84:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  a88:	89 2b       	or	r24, r25
- a8a:	69 f5       	brne	.+90     	; 0xae6 <__stack+0x287>
- a8c:	81 e0       	ldi	r24, 0x01	; 1
+ a8a:	09 f5       	brne	.+66     	; 0xace <__stack+0x26f>
+ a8c:	83 e0       	ldi	r24, 0x03	; 3
  a8e:	90 e0       	ldi	r25, 0x00	; 0
  a90:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  a94:	89 2b       	or	r24, r25
- a96:	39 f5       	brne	.+78     	; 0xae6 <__stack+0x287>
- a98:	82 e0       	ldi	r24, 0x02	; 2
+ a96:	d9 f0       	breq	.+54     	; 0xace <__stack+0x26f>
+ a98:	84 e0       	ldi	r24, 0x04	; 4
  a9a:	90 e0       	ldi	r25, 0x00	; 0
  a9c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  aa0:	89 2b       	or	r24, r25
- aa2:	09 f1       	breq	.+66     	; 0xae6 <__stack+0x287>
- aa4:	83 e0       	ldi	r24, 0x03	; 3
+ aa2:	a9 f4       	brne	.+42     	; 0xace <__stack+0x26f>
+ aa4:	85 e0       	ldi	r24, 0x05	; 5
  aa6:	90 e0       	ldi	r25, 0x00	; 0
  aa8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  aac:	89 2b       	or	r24, r25
- aae:	d9 f4       	brne	.+54     	; 0xae6 <__stack+0x287>
- ab0:	84 e0       	ldi	r24, 0x04	; 4
+ aae:	79 f4       	brne	.+30     	; 0xace <__stack+0x26f>
+ ab0:	86 e0       	ldi	r24, 0x06	; 6
  ab2:	90 e0       	ldi	r25, 0x00	; 0
  ab4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  ab8:	89 2b       	or	r24, r25
- aba:	a9 f4       	brne	.+42     	; 0xae6 <__stack+0x287>
- abc:	85 e0       	ldi	r24, 0x05	; 5
+ aba:	49 f4       	brne	.+18     	; 0xace <__stack+0x26f>
+ abc:	87 e0       	ldi	r24, 0x07	; 7
  abe:	90 e0       	ldi	r25, 0x00	; 0
  ac0:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  ac4:	89 2b       	or	r24, r25
- ac6:	79 f4       	brne	.+30     	; 0xae6 <__stack+0x287>
- ac8:	86 e0       	ldi	r24, 0x06	; 6
- aca:	90 e0       	ldi	r25, 0x00	; 0
- acc:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- ad0:	89 2b       	or	r24, r25
- ad2:	49 f4       	brne	.+18     	; 0xae6 <__stack+0x287>
- ad4:	87 e0       	ldi	r24, 0x07	; 7
- ad6:	90 e0       	ldi	r25, 0x00	; 0
- ad8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- adc:	89 2b       	or	r24, r25
- ade:	19 f4       	brne	.+6      	; 0xae6 <__stack+0x287>
+ ac6:	19 f4       	brne	.+6      	; 0xace <__stack+0x26f>
 		turn_right();
- ae0:	0e 94 7b 00 	call	0xf6	; 0xf6 <turn_right>
- ae4:	38 cb       	rjmp	.-2448   	; 0x156 <main+0xa>
+ ac8:	0e 94 55 00 	call	0xaa	; 0xaa <turn_right>
+ acc:	05 cb       	rjmp	.-2550   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- ae6:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
+ ace:	80 e0       	ldi	r24, 0x00	; 0
+ ad0:	90 e0       	ldi	r25, 0x00	; 0
+ ad2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ ad6:	89 2b       	or	r24, r25
+ ad8:	69 f5       	brne	.+90     	; 0xb34 <__stack+0x2d5>
+ ada:	81 e0       	ldi	r24, 0x01	; 1
+ adc:	90 e0       	ldi	r25, 0x00	; 0
+ ade:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ ae2:	89 2b       	or	r24, r25
+ ae4:	39 f5       	brne	.+78     	; 0xb34 <__stack+0x2d5>
+ ae6:	82 e0       	ldi	r24, 0x02	; 2
  ae8:	90 e0       	ldi	r25, 0x00	; 0
  aea:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  aee:	89 2b       	or	r24, r25
- af0:	69 f5       	brne	.+90     	; 0xb4c <__stack+0x2ed>
- af2:	81 e0       	ldi	r24, 0x01	; 1
+ af0:	09 f5       	brne	.+66     	; 0xb34 <__stack+0x2d5>
+ af2:	83 e0       	ldi	r24, 0x03	; 3
  af4:	90 e0       	ldi	r25, 0x00	; 0
  af6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  afa:	89 2b       	or	r24, r25
- afc:	39 f5       	brne	.+78     	; 0xb4c <__stack+0x2ed>
- afe:	82 e0       	ldi	r24, 0x02	; 2
+ afc:	d9 f4       	brne	.+54     	; 0xb34 <__stack+0x2d5>
+ afe:	84 e0       	ldi	r24, 0x04	; 4
  b00:	90 e0       	ldi	r25, 0x00	; 0
  b02:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b06:	89 2b       	or	r24, r25
- b08:	09 f5       	brne	.+66     	; 0xb4c <__stack+0x2ed>
- b0a:	83 e0       	ldi	r24, 0x03	; 3
+ b08:	a9 f0       	breq	.+42     	; 0xb34 <__stack+0x2d5>
+ b0a:	85 e0       	ldi	r24, 0x05	; 5
  b0c:	90 e0       	ldi	r25, 0x00	; 0
  b0e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b12:	89 2b       	or	r24, r25
- b14:	d9 f0       	breq	.+54     	; 0xb4c <__stack+0x2ed>
- b16:	84 e0       	ldi	r24, 0x04	; 4
+ b14:	79 f4       	brne	.+30     	; 0xb34 <__stack+0x2d5>
+ b16:	86 e0       	ldi	r24, 0x06	; 6
  b18:	90 e0       	ldi	r25, 0x00	; 0
  b1a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b1e:	89 2b       	or	r24, r25
- b20:	a9 f4       	brne	.+42     	; 0xb4c <__stack+0x2ed>
- b22:	85 e0       	ldi	r24, 0x05	; 5
+ b20:	49 f4       	brne	.+18     	; 0xb34 <__stack+0x2d5>
+ b22:	87 e0       	ldi	r24, 0x07	; 7
  b24:	90 e0       	ldi	r25, 0x00	; 0
  b26:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b2a:	89 2b       	or	r24, r25
- b2c:	79 f4       	brne	.+30     	; 0xb4c <__stack+0x2ed>
- b2e:	86 e0       	ldi	r24, 0x06	; 6
- b30:	90 e0       	ldi	r25, 0x00	; 0
- b32:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- b36:	89 2b       	or	r24, r25
- b38:	49 f4       	brne	.+18     	; 0xb4c <__stack+0x2ed>
- b3a:	87 e0       	ldi	r24, 0x07	; 7
- b3c:	90 e0       	ldi	r25, 0x00	; 0
- b3e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- b42:	89 2b       	or	r24, r25
- b44:	19 f4       	brne	.+6      	; 0xb4c <__stack+0x2ed>
-		turn_right();
- b46:	0e 94 7b 00 	call	0xf6	; 0xf6 <turn_right>
- b4a:	05 cb       	rjmp	.-2550   	; 0x156 <main+0xa>
+ b2c:	19 f4       	brne	.+6      	; 0xb34 <__stack+0x2d5>
+		turn_left();
+ b2e:	0e 94 50 00 	call	0xa0	; 0xa0 <turn_left>
+ b32:	d2 ca       	rjmp	.-2652   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && is_white(4) && !is_white(5) && !is_white(6) && !is_white(7)){
- b4c:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
+ b34:	80 e0       	ldi	r24, 0x00	; 0
+ b36:	90 e0       	ldi	r25, 0x00	; 0
+ b38:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ b3c:	89 2b       	or	r24, r25
+ b3e:	69 f5       	brne	.+90     	; 0xb9a <__stack+0x33b>
+ b40:	81 e0       	ldi	r24, 0x01	; 1
+ b42:	90 e0       	ldi	r25, 0x00	; 0
+ b44:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ b48:	89 2b       	or	r24, r25
+ b4a:	39 f5       	brne	.+78     	; 0xb9a <__stack+0x33b>
+ b4c:	82 e0       	ldi	r24, 0x02	; 2
  b4e:	90 e0       	ldi	r25, 0x00	; 0
  b50:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b54:	89 2b       	or	r24, r25
- b56:	69 f5       	brne	.+90     	; 0xbb2 <__stack+0x353>
- b58:	81 e0       	ldi	r24, 0x01	; 1
+ b56:	09 f5       	brne	.+66     	; 0xb9a <__stack+0x33b>
+ b58:	83 e0       	ldi	r24, 0x03	; 3
  b5a:	90 e0       	ldi	r25, 0x00	; 0
  b5c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b60:	89 2b       	or	r24, r25
- b62:	39 f5       	brne	.+78     	; 0xbb2 <__stack+0x353>
- b64:	82 e0       	ldi	r24, 0x02	; 2
+ b62:	d9 f4       	brne	.+54     	; 0xb9a <__stack+0x33b>
+ b64:	84 e0       	ldi	r24, 0x04	; 4
  b66:	90 e0       	ldi	r25, 0x00	; 0
  b68:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b6c:	89 2b       	or	r24, r25
- b6e:	09 f5       	brne	.+66     	; 0xbb2 <__stack+0x353>
- b70:	83 e0       	ldi	r24, 0x03	; 3
+ b6e:	a9 f4       	brne	.+42     	; 0xb9a <__stack+0x33b>
+ b70:	85 e0       	ldi	r24, 0x05	; 5
  b72:	90 e0       	ldi	r25, 0x00	; 0
  b74:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b78:	89 2b       	or	r24, r25
- b7a:	d9 f4       	brne	.+54     	; 0xbb2 <__stack+0x353>
- b7c:	84 e0       	ldi	r24, 0x04	; 4
+ b7a:	79 f0       	breq	.+30     	; 0xb9a <__stack+0x33b>
+ b7c:	86 e0       	ldi	r24, 0x06	; 6
  b7e:	90 e0       	ldi	r25, 0x00	; 0
  b80:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b84:	89 2b       	or	r24, r25
- b86:	a9 f0       	breq	.+42     	; 0xbb2 <__stack+0x353>
- b88:	85 e0       	ldi	r24, 0x05	; 5
+ b86:	49 f4       	brne	.+18     	; 0xb9a <__stack+0x33b>
+ b88:	87 e0       	ldi	r24, 0x07	; 7
  b8a:	90 e0       	ldi	r25, 0x00	; 0
  b8c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  b90:	89 2b       	or	r24, r25
- b92:	79 f4       	brne	.+30     	; 0xbb2 <__stack+0x353>
- b94:	86 e0       	ldi	r24, 0x06	; 6
- b96:	90 e0       	ldi	r25, 0x00	; 0
- b98:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- b9c:	89 2b       	or	r24, r25
- b9e:	49 f4       	brne	.+18     	; 0xbb2 <__stack+0x353>
- ba0:	87 e0       	ldi	r24, 0x07	; 7
- ba2:	90 e0       	ldi	r25, 0x00	; 0
- ba4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- ba8:	89 2b       	or	r24, r25
- baa:	19 f4       	brne	.+6      	; 0xbb2 <__stack+0x353>
+ b92:	19 f4       	brne	.+6      	; 0xb9a <__stack+0x33b>
 		turn_left();
- bac:	0e 94 6d 00 	call	0xda	; 0xda <turn_left>
- bb0:	d2 ca       	rjmp	.-2652   	; 0x156 <main+0xa>
+ b94:	0e 94 50 00 	call	0xa0	; 0xa0 <turn_left>
+ b98:	9f ca       	rjmp	.-2754   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && is_white(5) && !is_white(6) && !is_white(7)){
- bb2:	80 e0       	ldi	r24, 0x00	; 0
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && is_white(6) && !is_white(7)){
+ b9a:	80 e0       	ldi	r24, 0x00	; 0
+ b9c:	90 e0       	ldi	r25, 0x00	; 0
+ b9e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ ba2:	89 2b       	or	r24, r25
+ ba4:	69 f5       	brne	.+90     	; 0xc00 <__stack+0x3a1>
+ ba6:	81 e0       	ldi	r24, 0x01	; 1
+ ba8:	90 e0       	ldi	r25, 0x00	; 0
+ baa:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ bae:	89 2b       	or	r24, r25
+ bb0:	39 f5       	brne	.+78     	; 0xc00 <__stack+0x3a1>
+ bb2:	82 e0       	ldi	r24, 0x02	; 2
  bb4:	90 e0       	ldi	r25, 0x00	; 0
  bb6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  bba:	89 2b       	or	r24, r25
- bbc:	69 f5       	brne	.+90     	; 0xc18 <__stack+0x3b9>
- bbe:	81 e0       	ldi	r24, 0x01	; 1
+ bbc:	09 f5       	brne	.+66     	; 0xc00 <__stack+0x3a1>
+ bbe:	83 e0       	ldi	r24, 0x03	; 3
  bc0:	90 e0       	ldi	r25, 0x00	; 0
  bc2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  bc6:	89 2b       	or	r24, r25
- bc8:	39 f5       	brne	.+78     	; 0xc18 <__stack+0x3b9>
- bca:	82 e0       	ldi	r24, 0x02	; 2
+ bc8:	d9 f4       	brne	.+54     	; 0xc00 <__stack+0x3a1>
+ bca:	84 e0       	ldi	r24, 0x04	; 4
  bcc:	90 e0       	ldi	r25, 0x00	; 0
  bce:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  bd2:	89 2b       	or	r24, r25
- bd4:	09 f5       	brne	.+66     	; 0xc18 <__stack+0x3b9>
- bd6:	83 e0       	ldi	r24, 0x03	; 3
+ bd4:	a9 f4       	brne	.+42     	; 0xc00 <__stack+0x3a1>
+ bd6:	85 e0       	ldi	r24, 0x05	; 5
  bd8:	90 e0       	ldi	r25, 0x00	; 0
  bda:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  bde:	89 2b       	or	r24, r25
- be0:	d9 f4       	brne	.+54     	; 0xc18 <__stack+0x3b9>
- be2:	84 e0       	ldi	r24, 0x04	; 4
+ be0:	79 f4       	brne	.+30     	; 0xc00 <__stack+0x3a1>
+ be2:	86 e0       	ldi	r24, 0x06	; 6
  be4:	90 e0       	ldi	r25, 0x00	; 0
  be6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  bea:	89 2b       	or	r24, r25
- bec:	a9 f4       	brne	.+42     	; 0xc18 <__stack+0x3b9>
- bee:	85 e0       	ldi	r24, 0x05	; 5
+ bec:	49 f0       	breq	.+18     	; 0xc00 <__stack+0x3a1>
+ bee:	87 e0       	ldi	r24, 0x07	; 7
  bf0:	90 e0       	ldi	r25, 0x00	; 0
  bf2:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  bf6:	89 2b       	or	r24, r25
- bf8:	79 f0       	breq	.+30     	; 0xc18 <__stack+0x3b9>
- bfa:	86 e0       	ldi	r24, 0x06	; 6
- bfc:	90 e0       	ldi	r25, 0x00	; 0
- bfe:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c02:	89 2b       	or	r24, r25
- c04:	49 f4       	brne	.+18     	; 0xc18 <__stack+0x3b9>
- c06:	87 e0       	ldi	r24, 0x07	; 7
- c08:	90 e0       	ldi	r25, 0x00	; 0
- c0a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c0e:	89 2b       	or	r24, r25
- c10:	19 f4       	brne	.+6      	; 0xc18 <__stack+0x3b9>
+ bf8:	19 f4       	brne	.+6      	; 0xc00 <__stack+0x3a1>
 		turn_left();
- c12:	0e 94 6d 00 	call	0xda	; 0xda <turn_left>
- c16:	9f ca       	rjmp	.-2754   	; 0x156 <main+0xa>
+ bfa:	0e 94 50 00 	call	0xa0	; 0xa0 <turn_left>
+ bfe:	6c ca       	rjmp	.-2856   	; 0xd8 <main+0x6>
 	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && is_white(6) && !is_white(7)){
- c18:	80 e0       	ldi	r24, 0x00	; 0
- c1a:	90 e0       	ldi	r25, 0x00	; 0
- c1c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c20:	89 2b       	or	r24, r25
- c22:	69 f5       	brne	.+90     	; 0xc7e <__stack+0x41f>
- c24:	81 e0       	ldi	r24, 0x01	; 1
- c26:	90 e0       	ldi	r25, 0x00	; 0
- c28:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c2c:	89 2b       	or	r24, r25
- c2e:	39 f5       	brne	.+78     	; 0xc7e <__stack+0x41f>
- c30:	82 e0       	ldi	r24, 0x02	; 2
- c32:	90 e0       	ldi	r25, 0x00	; 0
- c34:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c38:	89 2b       	or	r24, r25
- c3a:	09 f5       	brne	.+66     	; 0xc7e <__stack+0x41f>
- c3c:	83 e0       	ldi	r24, 0x03	; 3
- c3e:	90 e0       	ldi	r25, 0x00	; 0
- c40:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c44:	89 2b       	or	r24, r25
- c46:	d9 f4       	brne	.+54     	; 0xc7e <__stack+0x41f>
- c48:	84 e0       	ldi	r24, 0x04	; 4
- c4a:	90 e0       	ldi	r25, 0x00	; 0
- c4c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c50:	89 2b       	or	r24, r25
- c52:	a9 f4       	brne	.+42     	; 0xc7e <__stack+0x41f>
- c54:	85 e0       	ldi	r24, 0x05	; 5
+	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && is_white(7)){
+ c00:	80 e0       	ldi	r24, 0x00	; 0
+ c02:	90 e0       	ldi	r25, 0x00	; 0
+ c04:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ c08:	89 2b       	or	r24, r25
+ c0a:	09 f0       	breq	.+2      	; 0xc0e <__stack+0x3af>
+ c0c:	65 ca       	rjmp	.-2870   	; 0xd8 <main+0x6>
+ c0e:	81 e0       	ldi	r24, 0x01	; 1
+ c10:	90 e0       	ldi	r25, 0x00	; 0
+ c12:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ c16:	89 2b       	or	r24, r25
+ c18:	09 f0       	breq	.+2      	; 0xc1c <__stack+0x3bd>
+ c1a:	5e ca       	rjmp	.-2884   	; 0xd8 <main+0x6>
+ c1c:	82 e0       	ldi	r24, 0x02	; 2
+ c1e:	90 e0       	ldi	r25, 0x00	; 0
+ c20:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ c24:	89 2b       	or	r24, r25
+ c26:	09 f0       	breq	.+2      	; 0xc2a <__stack+0x3cb>
+ c28:	57 ca       	rjmp	.-2898   	; 0xd8 <main+0x6>
+ c2a:	83 e0       	ldi	r24, 0x03	; 3
+ c2c:	90 e0       	ldi	r25, 0x00	; 0
+ c2e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ c32:	89 2b       	or	r24, r25
+ c34:	09 f0       	breq	.+2      	; 0xc38 <__stack+0x3d9>
+ c36:	50 ca       	rjmp	.-2912   	; 0xd8 <main+0x6>
+ c38:	84 e0       	ldi	r24, 0x04	; 4
+ c3a:	90 e0       	ldi	r25, 0x00	; 0
+ c3c:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ c40:	89 2b       	or	r24, r25
+ c42:	09 f0       	breq	.+2      	; 0xc46 <__stack+0x3e7>
+ c44:	49 ca       	rjmp	.-2926   	; 0xd8 <main+0x6>
+ c46:	85 e0       	ldi	r24, 0x05	; 5
+ c48:	90 e0       	ldi	r25, 0x00	; 0
+ c4a:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ c4e:	89 2b       	or	r24, r25
+ c50:	09 f0       	breq	.+2      	; 0xc54 <__stack+0x3f5>
+ c52:	42 ca       	rjmp	.-2940   	; 0xd8 <main+0x6>
+ c54:	86 e0       	ldi	r24, 0x06	; 6
  c56:	90 e0       	ldi	r25, 0x00	; 0
  c58:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
  c5c:	89 2b       	or	r24, r25
- c5e:	79 f4       	brne	.+30     	; 0xc7e <__stack+0x41f>
- c60:	86 e0       	ldi	r24, 0x06	; 6
- c62:	90 e0       	ldi	r25, 0x00	; 0
- c64:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c68:	89 2b       	or	r24, r25
- c6a:	49 f0       	breq	.+18     	; 0xc7e <__stack+0x41f>
- c6c:	87 e0       	ldi	r24, 0x07	; 7
- c6e:	90 e0       	ldi	r25, 0x00	; 0
- c70:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c74:	89 2b       	or	r24, r25
- c76:	19 f4       	brne	.+6      	; 0xc7e <__stack+0x41f>
-		turn_left();
- c78:	0e 94 6d 00 	call	0xda	; 0xda <turn_left>
- c7c:	6c ca       	rjmp	.-2856   	; 0x156 <main+0xa>
-	}
-	else if(!is_white(0) && !is_white(1) && !is_white(2) && !is_white(3) && !is_white(4) && !is_white(5) && !is_white(6) && is_white(7)){
- c7e:	80 e0       	ldi	r24, 0x00	; 0
- c80:	90 e0       	ldi	r25, 0x00	; 0
- c82:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c86:	89 2b       	or	r24, r25
- c88:	09 f0       	breq	.+2      	; 0xc8c <__stack+0x42d>
- c8a:	65 ca       	rjmp	.-2870   	; 0x156 <main+0xa>
- c8c:	81 e0       	ldi	r24, 0x01	; 1
- c8e:	90 e0       	ldi	r25, 0x00	; 0
- c90:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- c94:	89 2b       	or	r24, r25
- c96:	09 f0       	breq	.+2      	; 0xc9a <__stack+0x43b>
- c98:	5e ca       	rjmp	.-2884   	; 0x156 <main+0xa>
- c9a:	82 e0       	ldi	r24, 0x02	; 2
- c9c:	90 e0       	ldi	r25, 0x00	; 0
- c9e:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- ca2:	89 2b       	or	r24, r25
- ca4:	09 f0       	breq	.+2      	; 0xca8 <__stack+0x449>
- ca6:	57 ca       	rjmp	.-2898   	; 0x156 <main+0xa>
- ca8:	83 e0       	ldi	r24, 0x03	; 3
- caa:	90 e0       	ldi	r25, 0x00	; 0
- cac:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- cb0:	89 2b       	or	r24, r25
- cb2:	09 f0       	breq	.+2      	; 0xcb6 <__stack+0x457>
- cb4:	50 ca       	rjmp	.-2912   	; 0x156 <main+0xa>
- cb6:	84 e0       	ldi	r24, 0x04	; 4
- cb8:	90 e0       	ldi	r25, 0x00	; 0
- cba:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- cbe:	89 2b       	or	r24, r25
- cc0:	09 f0       	breq	.+2      	; 0xcc4 <__stack+0x465>
- cc2:	49 ca       	rjmp	.-2926   	; 0x156 <main+0xa>
- cc4:	85 e0       	ldi	r24, 0x05	; 5
- cc6:	90 e0       	ldi	r25, 0x00	; 0
- cc8:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- ccc:	89 2b       	or	r24, r25
- cce:	09 f0       	breq	.+2      	; 0xcd2 <__stack+0x473>
- cd0:	42 ca       	rjmp	.-2940   	; 0x156 <main+0xa>
- cd2:	86 e0       	ldi	r24, 0x06	; 6
- cd4:	90 e0       	ldi	r25, 0x00	; 0
- cd6:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- cda:	89 2b       	or	r24, r25
- cdc:	09 f0       	breq	.+2      	; 0xce0 <__stack+0x481>
- cde:	3b ca       	rjmp	.-2954   	; 0x156 <main+0xa>
- ce0:	87 e0       	ldi	r24, 0x07	; 7
- ce2:	90 e0       	ldi	r25, 0x00	; 0
- ce4:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
- ce8:	89 2b       	or	r24, r25
- cea:	09 f4       	brne	.+2      	; 0xcee <__stack+0x48f>
- cec:	34 ca       	rjmp	.-2968   	; 0x156 <main+0xa>
+ c5e:	09 f0       	breq	.+2      	; 0xc62 <__stack+0x403>
+ c60:	3b ca       	rjmp	.-2954   	; 0xd8 <main+0x6>
+ c62:	87 e0       	ldi	r24, 0x07	; 7
+ c64:	90 e0       	ldi	r25, 0x00	; 0
+ c66:	0e 94 36 00 	call	0x6c	; 0x6c <is_white>
+ c6a:	89 2b       	or	r24, r25
+ c6c:	09 f4       	brne	.+2      	; 0xc70 <__stack+0x411>
+ c6e:	34 ca       	rjmp	.-2968   	; 0xd8 <main+0x6>
 		turn_left_hard();
- cee:	0e 94 89 00 	call	0x112	; 0x112 <turn_left_hard>
- cf2:	31 ca       	rjmp	.-2974   	; 0x156 <main+0xa>
+ c70:	0e 94 5a 00 	call	0xb4	; 0xb4 <turn_left_hard>
+ c74:	31 ca       	rjmp	.-2974   	; 0xd8 <main+0x6>
 
-00000cf4 <_exit>:
- cf4:	f8 94       	cli
+00000c76 <_exit>:
+ c76:	f8 94       	cli
 
-00000cf6 <__stop_program>:
- cf6:	ff cf       	rjmp	.-2      	; 0xcf6 <__stop_program>
+00000c78 <__stop_program>:
+ c78:	ff cf       	rjmp	.-2      	; 0xc78 <__stop_program>
