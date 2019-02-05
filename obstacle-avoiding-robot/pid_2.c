@@ -23,9 +23,9 @@ int c,i;
 
 void move(int left,int right)
 {
-	PORTA |= (1<<PINA2)|(1<<PINA4);
-	PORTA &= ~(1<<PINA3);
-	PORTA &= ~(1<<PINA5);
+	PORTD |= (1<<PIND1)|(1<<PIND2);
+	PORTD &= ~(1<<PIND0);
+	PORTD &= ~(1<<PIND3);
 	OCR1A =  left;
 	OCR1B =  right;
 	

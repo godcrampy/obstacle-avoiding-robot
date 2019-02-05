@@ -54,10 +54,10 @@ void turn_right_hard(){
 	}
 
 void stop(){
-	PORTA&=~(1<<PINA2);
-	PORTA&=~(1<<PINA3);
-	PORTA&=~(1<<PINA4);
-	PORTA&=~(1<<PINA5);
+	PORTD&=~(1<<PIND0);
+	PORTD&=~(1<<PIND1);
+	PORTD&=~(1<<PIND2);
+	PORTD&=~(1<<PIND3);
 }
 
 int main(void)

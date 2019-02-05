@@ -24,58 +24,62 @@ void pwm_init(){
 }
 
 void move_forward(){
-	PORTA|=(1<<PINA2)|(1<<PINA4);
-	PORTA&=~(1<<PINA3);
-	PORTA&=~(1<<PINA5);
+	PORTD|=(1<<PIND1)|(1<<PIND2);
+	PORTD&=~(1<<PIND0);
+	PORTD&=~(1<<PIND3);
 	OCR1A=1000;//Run Motor 1 at 100% of ICR1(Reference) value
 	OCR1B=1000;//Run Motor 2 at 100% of ICR1(Reference) value
 }
 
 void move_backward(){
-	PORTA|=(1<<PINA3)|(1<<PINA5);
-	PORTA&=~(1<<PINA2);
-	PORTA&=~(1<<PINA4);
+	PORTD|=(1<<PIND3)|(1<<PIND0);
+	PORTD&=~(1<<PIND1);
+	PORTD&=~(1<<PIND2);
 	OCR1A=1000;//Run Motor 1 at 100% of ICR1(Reference) value {Reverse}
 	OCR1B=1000;//Run Motor 2 at 100% of ICR1(Reference) value {Reverse}
 }
 
 void turn_left(){
-	PORTA|=(1<<PINA2)|(1<<PINA4);
-	PORTA&=~(1<<PINA3);
-	PORTA&=~(1<<PINA5);
+	PORTD|=(1<<PIND2);
+	PORTD&=~(1<<PIND0);
+	PORTD&=~(1<<PIND1);
+	PORTD&=~(1<<PIND3);
 	OCR1A=1000;//Run Motor 1 at 100% of ICR1(Reference) value
 	OCR1B=450;//Run Motor 2 at 45% of ICR1(Reference) value
 }
 
 void turn_right(){
-	PORTA|=(1<<PINA2)|(1<<PINA4);
-	PORTA&=~(1<<PINA3);
-	PORTA&=~(1<<PINA5);
+	PORTD|=(1<<PIND1);
+	PORTD&=~(1<<PIND0);
+	PORTD&=~(1<<PIND2);
+	PORTD&=~(1<<PIND3);
 	OCR1A=450;//Run Motor 1 at 45% of ICR1(Reference) value
 	OCR1B=1000;//Run Motor 2 at 100% of ICR1(Reference) value
 }
 
 void turn_left_hard(){
-	PORTA|=(1<<PINA2)|(1<<PINA5);
-	PORTA&=~(1<<PINA3);
-	PORTA&=~(1<<PINA4);
+	PORTD|=(1<<PIND2);
+	PORTD|=(1<<PIND0);
+	PORTD&=~(1<<PIND1);
+	PORTD&=~(1<<PIND3);
 	OCR1A=750;//Run Motor 1 at 100% of ICR1(Reference) value
 	OCR1B=750;//Run Motor 2 at 100% of ICR1(Reference) value {Reverse}
 }
 
 void turn_right_hard(){
-	PORTA|=(1<<PINA3)|(1<<PINA4);
-	PORTA&=~(1<<PINA2);
-	PORTA&=~(1<<PINA5);
+	PORTD|=(1<<PIND1);
+	PORTD|=(1<<PIND3);
+	PORTD&=~(1<<PIND2);
+	PORTD&=~(1<<PIND0);
 	OCR1A=750;//Run Motor 1 at 75% of ICR1(Reference) value {Reverse}
 	OCR1B=750;//Run Motor 2 at 75% of ICR1(Reference) value
 	}
 
 void stop(){
-	PORTA&=~(1<<PINA2);
-	PORTA&=~(1<<PINA3);
-	PORTA&=~(1<<PINA4);
-	PORTA&=~(1<<PINA5);
+	PORTD&=~(1<<PIND0);
+	PORTD&=~(1<<PIND1);
+	PORTD&=~(1<<PIND2);
+	PORTD&=~(1<<PIND3);
 }
 
 int main(void)
