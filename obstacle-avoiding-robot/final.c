@@ -58,16 +58,51 @@ int pid_calc(void)
 	
 }
 
+void interupt_init(void)
+{
+	GICR|=(1<<INT0);//enabling interrupt0
+
+	MCUCR|=(1<<ISC00);//setting interrupt triggering logic change
+
+	int16_t COUNTA = 0;//storing digital output
+
+	sei();// enabling global interrupts
+}
+
+void detect_obstacle(void)
+{
+	PORTD|=(1<<PIND0);
+
+		_delay_us(15);	//triggering the sensor for 15usec
+
+		PORTD &=~(1<<PIND0);
+
+		COUNTA = (pulse/58);//getting the distance based on formula on introduction
+		
+		forward();
+		
+		if(COUNTA<=10)
+		{
+			//uturn
+		}
+		
+}
 
 
 int main(void)
 {
-    DDRD=0b00000000;
+    DDRD=0x00;
     DDRA=0xFF;
 	pwm_init();
+	interupt_init();
+
+	
+
 	
     while (1) 
     {
+
+    	detect_obstacle();
 		//stop code 
 		if(c==8)
 		move(0,0);
@@ -79,4 +114,34 @@ int main(void)
 	}
  
 	return 0;
+}
+ISR(INT0_vect)//interrupt service routine when there is a change in logic level
+
+{
+
+	if (i==1)//when logic from HIGH to LOW
+
+	{
+
+		TCCR1B=0;//disabling counter
+
+		pulse=TCNT1;//count memory is updated to integer
+
+		TCNT1=0;//resetting the counter memory
+
+		i=0;
+
+	}
+
+
+	if (i==0)//when logic change from LOW to HIGH
+
+	{
+
+		TCCR1B|=(1<<CS10);//enabling counter
+
+		i=1;
+
+	}
+
 }
